@@ -7,7 +7,7 @@
 
 static void *Thread1(void *pdata){
     while(1){
-        printf("Ping\n");
+        printf("Piiiiing\n");
         fflush(stdout);
         sleep(1);
     }
@@ -16,7 +16,7 @@ static void *Thread1(void *pdata){
 
 static void *Thread2(void *pdata){
     while(1){
-        printf("Pong\n");
+        printf("Poooong\n");
         fflush(stdout);
         sleep(1);
     }
