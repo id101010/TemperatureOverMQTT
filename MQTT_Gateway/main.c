@@ -1,43 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <signal.h>
-#include <pthread.h>
 
-static void *Thread1(void *pdata){
-    while(1){
-        printf("Ping\n");
-        fflush(stdout);
-        sleep(1);
-    }
-    pthread_exit(NULL);
+#define SENSOR_MAC "CC:85:C8:56:E5:DD"
+
+#define START_BLE_SCAN "{\"device\":\"\",\n\"command\":\"StartBleScan\"\n}"
+#define CONNECT_SENSOR "{\"device\":\""SENSOR_MAC"\",\"command\":\"Connect\"}"
+#define DISCONNECT_SENSOR "{\"device\":\""SENSOR_MAC"\",\"command\":\"Disconnect\"}"
+
+// String buffer
+char buffer[100];
+
+void send_command(int socket_fd, char *command)
+{
+    strcpy(buffer, command);
+    send(socket_fd, buffer, strlen(buffer), 0);
+    printf("[DEBUG]: Send command: %s.\n", buffer);
 }
 
-static void *Thread2(void *pdata){
-    while(1){
-        printf("Pong\n");
-        fflush(stdout);
-        sleep(1);
-    }
-    pthread_exit(NULL);
-}
+int main(void)
+{
+    int t = 0;
 
-int32_t main(void){
+    printf("[DEBUG]: Hello.\n");
 
-    pthread_t Thread1ID, Thread2ID;
+    // Get a socket filedescriptor
+    int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    printf("[DEBUG]: Socket created.\n");
 
-    /* Create all Threads */
-    pthread_create(&Thread1ID, NULL, Thread1, NULL);
-    pthread_create(&Thread2ID, NULL, Thread2, NULL);
+    // Set socket adress
+    struct sockaddr_un socket_addr;
+    socket_addr.sun_family = AF_UNIX;
+    strcpy(socket_addr.sun_path, "/tmp/sensor-hub.socket");
+    int addr_len = strlen(socket_addr.sun_path) + sizeof(socket_addr.sun_family);
+    printf("[DEBUG]: Socket adress set.\n");
 
-    /* Wait 10s */
+    // Connect to socket
+    connect(socket_fd, (struct sockaddr *)&socket_addr, addr_len);
+    printf("[DEBUG]: Socket connected.\n");
+
+
+    // connect
+    send_command(socket_fd, CONNECT_SENSOR);
+
+    // Read response from socket
+    t = recv(socket_fd, buffer, 99, 0);
+    buffer[t] = '\0';
+    printf("%s", buffer);
+
     sleep(10);
 
-    pthread_cancel(Thread1ID);
-    pthread_join(Thread1ID, NULL);
-    pthread_cancel(Thread2ID);
-    pthread_join(Thread2ID, NULL);
+    // disconnect
+    send_command(socket_fd, DISCONNECT_SENSOR);
 
-    exit(EXIT_SUCCESS);
+    // Read response from socket
+    t = recv(socket_fd, buffer, 99, 0);
+    buffer[t] = '\0';
+    printf("%s", buffer);
+
+    // Close socket
+    close(socket_fd);
+
+    // Return
+    return(EXIT_SUCCESS);
 }
