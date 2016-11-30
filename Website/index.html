@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Google Charts test</title>
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	
+    <meta name="description" content="An example for using Google Charts.">
+    <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        // Load package
+        google.charts.load('current', {packages: ['line']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'time');
+            data.addColumn('number', 'X');
+            data.addColumn('number', 'Y');
+            data.addColumn('number', 'Z');
+
+            data.addRows([
+                ['', 37.8, 80.8, 41.8],
+                ['', 30.9, 69.5, 32.4],
+                ['', 25.4,   57, 25.7],
+                ['', 11.7, 18.8, 10.5],
+                ['', 11.9, 17.6, 10.4],
+                ['',  8.8, 13.6,  7.7],
+                ['',  7.6, 12.3,  9.6],
+                ['', 12.3, 29.2, 10.6],
+                ['', 16.9, 42.9, 14.8],
+                ['', 12.8, 30.9, 11.6],
+                ['',  5.3,  7.9,  4.7],
+                ['',  6.6,  8.4,  5.2],
+                ['',  4.8,  6.3,  3.6],
+                ['',  4.2,  6.2,  3.4]
+            ]);
+
+            var options = {
+                chart: {
+                    title: 'Data from Sensor'
+                },
+                width: 800,
+                height: 500
+            };
+
+            var chart = new google.charts.Line(document.getElementById('google_chart'));
+            chart.draw(data, options);
+        }
+    </script>
+	
+	
+	<script type="text/javascript" src="mqttws31.js"></script>
+    <script type="text/javascript">
+        // Parameters
+        var hostname = "147.87.98.17";
+        var port = 9001;
+
+        // Create a client instance
+        var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
+
+        // Set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
+
+        // Connect the client
+        client.connect({
+            userName: "gruppe_15",
+            password: "JfC65L05",
+            onSuccess: onConnect,
+            onFailure: onConnectionFailure
+        });
+
+        // Called when the client connects
+        function onConnect() {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect");
+            client.subscribe("test/#");
+        }
+
+        // Called when the client could not connect
+        function onConnectionFailure() {
+            console.log("onConnectionFailure");
+        }
+
+        // Called when the client loses its connection
+        function onConnectionLost(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("onConnectionLost:" + responseObject.errorMessage);
+            }
+        }
+
+        // Called when a message arrives
+        function onMessageArrived(message) {
+            console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
+        }
+
+        function send() {
+            if (!client) {
+                return;
+            }
+            var message = new Paho.MQTT.Message("Hello");
+            message.destinationName = "test/world";
+            client.send(message);
+        }
+    </script>
+
+	
+</head>
+
+
+
+
+<body>
+
+	<header>
+		<div>
+			<h1> WebInterface Sensor Data </h1>
+		</div>
+	</header>
+
+
+	<div>
+	<h2>
+		<button onclick="send()"> Button 1 </button>
+		<button onclick="location.href='http://www.google.ch'"> Go to Google </button>
+		<button onclick="send()"> Button 3 test </button>
+		<button onclick="send()"> Button 4 test </button>
+		</h2>
+	</div>
+
+	<div>
+		<h2> Sensor Data from MQTT Broker </h2>
+	</div>
+  		
+	<div3 id="google_chart" style="width: 900px; height: 500px"></div3>
+		
+ 	 
+</body>
+
+
+
+<footer>
+     <div> 
+	 	<pfoot> copyright </pfoot>
+	 </div>
+</footer>
+
+
+</html>
