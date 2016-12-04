@@ -4,7 +4,7 @@ CONFIG -= qt
 
 LIBS += -pthread
 LIBS += -lpthread
-LIBS += -L$$PWD/lib/ -lpaho-mqtt3a
+LIBS += -L$$PWD/libs/ -lpaho-mqtt3a
 
 target.path = /home/pi
 INSTALLS += target

@@ -3,7 +3,7 @@
 void connlost(void *context, char *cause)
 {
     MQTTAsync client = (MQTTAsync)context;
-    MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
+    //MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
 
     int rc;
 
@@ -70,4 +70,38 @@ void onConnect(void* context, MQTTAsync_successData* response)
         }
 }
 
+void setConnectOptions()
+{
+    conn_opts.keepAliveInterval = 20;
+    conn_opts.cleansession = 1;
+    conn_opts.onSuccess = onConnect;
+    conn_opts.onFailure = onConnectFailure;
+    conn_opts.context = client;
+    conn_opts.password = PASSWORD;
+    conn_opts.username = USERNAME;
+}
 
+void conectToBroker()
+{
+    MQTTAsync_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+    MQTTAsync_setCallbacks(client, NULL, connlost, NULL, NULL);
+
+    setConnectOptions();
+
+    if ((MQTTAsync_connect(client, &conn_opts)) != MQTTASYNC_SUCCESS)
+    {
+            printf("Failed to start connect\n");
+            exit(-1);
+    }
+
+    printf("Waiting for publication of %s\n"
+     "on topic %s for client with ClientID: %s\n",
+     PAYLOAD, TOPIC, CLIENTID);
+    while (!finished)
+            #if defined(WIN32) || defined(WIN64)
+                    Sleep(100);
+            #else
+                    usleep(10000L);
+            #endif
+    MQTTAsync_destroy(&client);
+}
