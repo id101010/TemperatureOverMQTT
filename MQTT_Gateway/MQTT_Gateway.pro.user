@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.1.0, 2016-11-30T14:13:30. -->
+<!-- Written by QtCreator 4.1.0, 2016-12-04T00:06:29. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -268,18 +268,23 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">RemoteLinux.DirectUploadStep</value>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedFiles">
        <value type="QString">/home/student/Documents/TemperatureOverMQTT/MQTT_Gateway/build-MQTT_Gateway-Raspberry_Pi-Debug/MQTT_Gateway</value>
+       <value type="QString">/home/student/Documents/TemperatureOverMQTT/MQTT_Gateway/build-MQTT_Gateway-Raspberry_Pi-Debug/MQTT_Gateway</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedHosts">
+       <value type="QString">192.168.0.170</value>
        <value type="QString">raspi-adc6.bfh.ch</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedRemotePaths">
        <value type="QString">/home/pi</value>
+       <value type="QString">/home/pi</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedSysroots">
        <value type="QString">/home/student/opt/cross-compile/sysroot</value>
+       <value type="QString">/home/student/opt/cross-compile/sysroot</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedTimes">
-       <value type="QDateTime">2016-11-30T14:12:12</value>
+       <value type="QDateTime">2016-12-03T23:53:48</value>
+       <value type="QDateTime">2016-11-30T15:31:30</value>
       </valuelist>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.IgnoreMissingFiles">false</value>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.Incremental">true</value>

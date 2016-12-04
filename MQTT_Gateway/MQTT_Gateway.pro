@@ -8,3 +8,5 @@ target.path = /home/pi
 INSTALLS += target
 
 SOURCES += main.c
+
+HEADERS +=
