@@ -7,6 +7,8 @@ LIBS += -pthread
 target.path = /home/pi
 INSTALLS += target
 
-SOURCES += main.c
+SOURCES += main.c \
+    ble_api.c
 
-HEADERS +=
+HEADERS += \
+    ble_api.h
