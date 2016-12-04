@@ -7,11 +7,12 @@
 #include <libs/MQTTAsync.h>
 
 #define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"
-#define CLIENTID    "ExampleClient"
-#define TOPICTemp   "EmbSy/gruppe_15/temp"
-#define TOPICAX     "EmbSy/gruppe_15/ax"
-#define TOPICAY     "EmbSy/gruppe_15/ay"
-#define TOPICAZ     "EmbSy/gruppe_15/az"
+#define CLIENTID    "BLESensor"
+#define TOPIC       "EmbSy/gruppe_15/test"
+#define TOPIC_TEMP   "EmbSy/gruppe_15/temp"
+#define TOPIC_AX     "EmbSy/gruppe_15/ax"
+#define TOPIC_AY     "EmbSy/gruppe_15/ay"
+#define TOPIC_AZ     "EmbSy/gruppe_15/az"
 #define USERNAME    "gruppe_15"
 #define PASSWORD    "JfC65L05"
 #define PAYLOAD     "Hello World!"
