@@ -1,13 +1,211 @@
 <!DOCTYPE html>
 <html>
+<title>BFH EMBSY Miniproject</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/w3.css">
 
-<head>
-    <meta charset="utf-8">
-    <title>Google Charts test</title>
-	<link href="style.css" rel="stylesheet" type="text/css" />
+
+<body>
+
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <ul class="w3-navbar w3-white w3-wide w3-padding-8 w3-card-2">
+    <li>
+      <a href="#home" class="w3-margin-left"><b>EMBSY</b> Miniproject</a>
+    </li>
+    <!-- Float links to the right. Hide them on small screens -->
+    <li class="w3-right w3-hide-small">
+      <a href="#projects" class="w3-left">Projects</a>
+      <a href="#about" class="w3-left">About</a>
+      <a href="#contact" class="w3-left w3-margin-right">Contact</a>
+    </li>
+  </ul>
+</div>
+
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="picture/main_electronics.jpg" alt="Electronics" width="1500" height="800">
+  <div class="w3-display-middle/ w3-margin-top w3-center">
+    <h1 class="w3-xxlarge"><span class="w3-border w3-border-black w3-padding">EMBSY</span> <span class="w3-hide-small">Embedded Systems Miniproject</span></h1>
+  </div>
+</header>
+
+
+<!-- Page content -->
+<div class="w3-content w3-padding" style="max-width:1564px">
+
+  <!-- Project Section -->
+  <div class="w3-container w3-padding-32" id="projects">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Projects</h3>
+    <p> In this project we connected a BLE-Sensor to the RaspberryPi 3 where the data are transmittet to the MQTT Broker. To visualize the data in a chart, we connect to the MQTT Broker.</p>
+ </div> 
+
+<div class="w3-row-padding">
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p> Please Connect to the MQTT Broker to get data from sensor</p>
+      </div>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p>Press to disconnect from MQTT Broker</p>
+      </div>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p>Press to stop</p>
+      </div>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p>Press to test the connection TEST</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="w3-row-padding">
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p><button class="w3-btn-block">connect</button></p>
+      </div>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p><button class="w3-btn-block">disconnect</button></p>
+      </div>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p><button class="w3-btn-block">stop</button></p>
+      </div>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <p><button class="w3-btn-block">test button</button></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-row-padding">
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      
+    </div>
+  </div>
+  
+  <div class="w3-row-padding">
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <div class="w3-display-container">
+        <div id="google_chart" style="width: 1500px; height: 800px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-row-padding">
+    
+  </div>
+
+
+  <!-- About Section -->
+  <div class="w3-container w3-padding-32" id="about">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">About</h3>
+    <p> This is the website for the "Miniproject" in Embedded Systems. The three students from E4p worked for this project.
 	
-    <meta name="description" content="An example for using Google Charts.">
-    <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
+    </p>
+  </div>
+
+  <div class="w3-row-padding w3-grayscale">
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <img src="picture/Student_1.jpg" alt="Student_1" style="width:100%">
+      <h3>Simon Schertz</h3>
+      <p class="w3-opacity">Student</p>
+      <p>Student in Electrical Engineering</p>
+      <p><button class="w3-btn-block">Contact</button></p>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <img src="picture/Student_2.jpg" alt="Student_2" style="width:100%">
+      <h3>Marcus Schluep</h3>
+      <p class="w3-opacity">Student</p>
+      <p>Student in Electrical Engineering</p>
+      <p><button class="w3-btn-block">Contact</button></p>
+    </div>
+    <div class="w3-col l3 m6 w3-margin-bottom">
+      <img src="picture/Student_3.jpg" alt="Student_3" style="width:100%">
+      <h3>Aaron Schmocker</h3>
+      <p class="w3-opacity">Student</p>
+      <p>Student in Electrical Engineering</p>
+      <p><button class="w3-btn-block">Contact</button></p>
+    </div>
+	 <div class="w3-col l3 m6 w3-margin-bottom">
+      <img src="picture/vacant.jpg" alt="Student_3" style="width:100%">
+      <h3>software engineer (vacant)</h3>
+      <p class="w3-opacity">Software Engineer</p>
+      <p>the snuffle Software Engineer</p>
+      <p><button class="w3-btn-block">Contact</button></p>
+    </div>
+  </div>
+
+
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-32" id="contact">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Contact</h3>
+    <p>Lets get in touch and talk about Embedded Systems and RaspberryPi for our next project.</p>
+    <form action="form.asp" target="_blank">
+      <input class="w3-input" type="text" placeholder="Name" required name="Name">
+      <input class="w3-input w3-section" type="text" placeholder="Email" required name="Email">
+      <input class="w3-input w3-section" type="text" placeholder="Subject" required name="Subject">
+      <input class="w3-input w3-section" type="text" placeholder="Comment" required name="Comment">
+      <button class="w3-btn w3-section" type="submit">
+        <i class="fa fa-paper-plane"></i> SEND MESSAGE
+      </button>
+    </form>
+  </div>
+ 
+ 
+<!-- End page content -->
+</div>
+
+<!-- Google Map -->
+<div id="googleMap" class="w3-grayscale" style="width:100%;height:450px;"></div>
+
+<!-- Footer -->
+<footer class="w3-center w3-black w3-padding-16">
+  <p>copyright</p>
+</footer>
+
+<!-- Add Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+
+<script>
+<!-- Google Map Location -->
+var myCenter = new google.maps.LatLng(47.06231884334362, 7.6143685170973185);
+
+function initialize() {
+var mapProp = {
+  center: myCenter,
+  zoom: 13,
+  scrollwheel: false,
+  draggable: false,
+  mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+
+var marker = new google.maps.Marker({
+  position: myCenter,
+});
+
+marker.setMap(map);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+
+<!-- Add Google charts -->
+<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
     <script type="text/javascript">
         // Load package
         google.charts.load('current', {packages: ['line']});
@@ -16,9 +214,9 @@
         function drawChart() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'time');
-            data.addColumn('number', 'X');
-            data.addColumn('number', 'Y');
-            data.addColumn('number', 'Z');
+            data.addColumn('number', 'accel');
+            data.addColumn('number', 'gyro');
+            data.addColumn('number', 'Temp');
 
             data.addRows([
                 ['', 37.8, 80.8, 41.8],
@@ -37,21 +235,23 @@
                 ['',  4.2,  6.2,  3.4]
             ]);
 
+
+
             var options = {
                 chart: {
                     title: 'Data from Sensor'
                 },
-                width: 800,
-                height: 500
+                width: 1500,
+                height: 800
             };
 
             var chart = new google.charts.Line(document.getElementById('google_chart'));
             chart.draw(data, options);
         }
     </script>
-	
-	
-	<script type="text/javascript" src="mqttws31.js"></script>
+
+<!-- JavaScript MQTT Communication -->
+	<script type="text/javascript" src="javascript/mqttws31.js"></script>
     <script type="text/javascript">
         // Parameters
         var hostname = "147.87.98.17";
@@ -106,46 +306,6 @@
         }
     </script>
 
-	
-</head>
 
-
-
-
-<body>
-
-	<header>
-		<div>
-			<h1> WebInterface Sensor Data </h1>
-		</div>
-	</header>
-
-
-	<div>
-	<h2>
-		<button onclick="send()"> Button 1 </button>
-		<button onclick="location.href='http://www.google.ch'"> Go to Google </button>
-		<button onclick="send()"> Button 3 test </button>
-		<button onclick="send()"> Button 4 test </button>
-		</h2>
-	</div>
-
-	<div>
-		<h2> Sensor Data from MQTT Broker </h2>
-	</div>
-  		
-	<div3 id="google_chart" style="width: 900px; height: 500px"></div3>
-		
- 	 
 </body>
-
-
-
-<footer>
-     <div> 
-	 	<pfoot> copyright </pfoot>
-	 </div>
-</footer>
-
-
 </html>
