@@ -1,9 +1,14 @@
 #include <stdio.h>
 #include "ble_api.h"
-#include "libs/jansson/include/jansson.h"
+#include "json.h"
 
 int main(void)
 {
+    // Test JSON stuff
+    char *pcString = "{\" Hello \":\" World \"}";
+    json_t *jsonMsg = NULL;
+    jsonMsg = json_createFromString(pcString);
+
     // Define and init connection struct
     connection_t conn;
     init_connect_obj(&conn);
