@@ -23,6 +23,7 @@ void onDisconnect(void* context, MQTTAsync_successData* response)
 void onSend(void* context, MQTTAsync_successData* response)
 {
         printf("Message with token value %d delivery confirmed\n", response->token);
+        messageMQTT.finished = true;
 }
 
 void onConnectFailure(void* context, MQTTAsync_failureData* response)
@@ -32,9 +33,9 @@ void onConnectFailure(void* context, MQTTAsync_failureData* response)
 }
 
 void onConnect(void* context, MQTTAsync_successData* response)
-{
-        printf("Successful connection\n");
-        messageMQTT.isConected = true;
+{    
+    printf("Successful connection\n");
+    messageMQTT.isConected = true;
 }
 
 void setConnectOptions()
@@ -48,8 +49,16 @@ void setConnectOptions()
     conn_opts.username = USERNAME;
 }
 
+
 void disconectBroker()
 {
+    opts.onSuccess = onDisconnect;
+    opts.context = client;
+
+    if(MQTTAsync_disconnect(client, &opts) != MQTTASYNC_SUCCESS)
+    {
+        printf("Failed to disconect Broker");
+    }
 
     MQTTAsync_destroy(&client);
 }
@@ -76,6 +85,8 @@ void sendMQTTmessage(message_t *message)
     pubmsg.retained = 0;
     deliveredtoken = 0;
 
+    message->finished = false;
+
     if(message->isConected != false)
     {
        if(MQTTAsync_sendMessage(client, message->topic, &pubmsg, &opts) != MQTTASYNC_SUCCESS)
@@ -86,5 +97,10 @@ void sendMQTTmessage(message_t *message)
     else
     {
         printf("Can't send message, no connection established");
+    }
+
+    while (message->finished != true) {
+        //sleep(100);
+        usleep(10000L);
     }
 }
