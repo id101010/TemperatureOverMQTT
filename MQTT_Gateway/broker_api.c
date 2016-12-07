@@ -9,7 +9,7 @@ void connlost(void *context, char *cause)
 
     if((MQTTAsync_connect(client, &conn_opts)) != MQTTASYNC_SUCCESS)
     {
-        printf("Failed to start connect, return code %d\n");
+        printf("Failed to start connect, return code \n");
         messageMQTT.finished = true;
     }
 }
@@ -68,17 +68,17 @@ void conectToBroker()
     }
 }
 
-void sendMQTTmessage(message_t message)
+void sendMQTTmessage(message_t *message)
 {
-    pubmsg.payload = message.payload;
-    pubmsg.payloadlen = strlen(message.payload);
+    pubmsg.payload = message->payload;
+    pubmsg.payloadlen = strlen(message->payload);
     pubmsg.qos = QOS;
     pubmsg.retained = 0;
     deliveredtoken = 0;
 
-    if(message.isConected != false)
+    if(message->isConected != false)
     {
-       if(MQTTAsync_sendMessage(client, message.topic, &pubmsg, &opts) != MQTTASYNC_SUCCESS)
+       if(MQTTAsync_sendMessage(client, message->topic, &pubmsg, &opts) != MQTTASYNC_SUCCESS)
        {
            printf("Failed to start sendMQTTmessage");
        }
@@ -87,7 +87,4 @@ void sendMQTTmessage(message_t message)
     {
         printf("Can't send message, no connection established");
     }
-
-
-
 }

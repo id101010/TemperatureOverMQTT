@@ -20,6 +20,8 @@
 #define QOS         1
 #define TIMEOUT     10000L
 
+#define STRING_SIZE 1000
+
 MQTTAsync client;
 MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
 MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
@@ -31,8 +33,8 @@ typedef struct message_s{
     bool isConected;
     bool finished;
 
-    char payload;
-    char topic;
+    char payload[STRING_SIZE];
+    char topic[STRING_SIZE];
 
 
 }message_t;
@@ -40,5 +42,9 @@ typedef struct message_s{
 message_t messageMQTT;
 
 volatile MQTTAsync_token deliveredtoken;
+
+void sendMQTTmessage(message_t *message);
+void conectToBroker();
+void disconectBroker();
 
 #endif // BROKER_API_H
