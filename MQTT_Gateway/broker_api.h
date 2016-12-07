@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <libs/MQTTAsync.h>
+#include <libs/libpaho/MQTTAsync.h>
 
 
 #define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"

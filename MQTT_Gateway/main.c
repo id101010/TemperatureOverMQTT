@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "ble_api.h"
+#include "libs/jansson/include/jansson.h"
 
 int main(void)
 {

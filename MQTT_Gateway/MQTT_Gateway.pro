@@ -2,9 +2,9 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -pthread
 LIBS += -lpthread
-LIBS += -L$$PWD/libs/ -lpaho-mqtt3a
+LIBS += -L$$PWD/libs/libpaho -lpaho-mqtt3a
+LIBS += -L$$PWD/libs/jansson/lib -ljansson
 
 target.path = /home/pi
 INSTALLS += target
@@ -16,4 +16,10 @@ SOURCES += main.c \
 HEADERS += \
     ble_api.h \
     broker_api.h \
-    libs/MQTTAsync.h
+    libs/jansson/include/jansson_config.h \
+    libs/jansson/include/jansson.h \
+    libs/libpaho/MQTTAsync.h \
+    libs/libpaho/MQTTClient.h \
+    libs/libpaho/MQTTClientPersistence.h
+
+DISTFILES +=
