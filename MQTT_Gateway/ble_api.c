@@ -1,5 +1,5 @@
 #include "ble_api.h"
-#include "libs/jansson/include/jansson.h"
+#include "json.h"
 
 void debug(const char *msg)
 {
