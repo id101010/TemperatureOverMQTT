@@ -72,22 +72,22 @@
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom"> 
 			<div class="w3-display-container">
-				<p><input type="button" value="connect" onClick="alert('connected')" onClick="connect()" class="w3-btn-block" /></p>
+				<p><input type="button" value="connect" onClick="alert('connected - not implemented yet - auto connect look at console')" onClick="client.connect()" class="w3-btn-block" /></p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="alert('disconnected')" onClick="disconnect()" >disconnect</button></p>
+				<p><button class="w3-btn-block" onClick="alert('disconnected - not implemented yet')" onClick="disconnect()" >disconnect</button></p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="">stop</button></p>
+				<p><button class="w3-btn-block" onClick="alert('stop - not implemented yet')" onClick="">stop</button></p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="">start</button></p>
+				<p><button class="w3-btn-block" onClick="alert('start - not implemented yet')" onClick="">start</button></p>
 			</div>
 		</div>
 	</div>
@@ -100,7 +100,7 @@
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<div id="google_chart" style="width: 1500px; height: 800px">
+				<div id="google_chart" style="width: 1500px; height: 600px">
 				</div>
 			</div>
 		</div>
@@ -125,7 +125,7 @@
 			<h3>Simon Schertz</h3>
 			<p class="w3-opacity">Student</p>
 			<p>Student in Electrical Engineering</p>
-			<p><button class="w3-btn-block">Contact</button></p>
+			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
 		</div>
 		
 		<div class="w3-col l3 m6 w3-margin-bottom">
@@ -133,7 +133,7 @@
 			<h3>Marcus Schluep</h3>
 			<p class="w3-opacity">Student</p>
 			<p>Student in Electrical Engineering</p>
-			<p><button class="w3-btn-block">Contact</button></p>
+			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
 		</div>
 		
 		<div class="w3-col l3 m6 w3-margin-bottom">
@@ -141,7 +141,7 @@
 			<h3>Aaron Schmocker</h3>
 			<p class="w3-opacity">Student</p>
 			<p>Student in Electrical Engineering</p>
-			<p><button class="w3-btn-block">Contact</button></p>
+			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
 		</div>
 		
 		<div class="w3-col l3 m6 w3-margin-bottom">
@@ -149,7 +149,7 @@
 			<h3>software engineer (vacant)</h3>
 			<p class="w3-opacity">Software Engineer</p>
 			<p>the snuffle Software Engineer</p>
-			<p><button class="w3-btn-block">Contact</button></p>
+			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
 		</div>
 	 </div>
 
@@ -163,7 +163,7 @@
 		<input class="w3-input w3-section" type="text" placeholder="Email" required name="Email">
 		<input class="w3-input w3-section" type="text" placeholder="Subject" required name="Subject">
 		<input class="w3-input w3-section" type="text" placeholder="Comment" required name="Comment">
-		<button class="w3-btn w3-section" type="submit">
+		<button onClick="alert('send email - not implemented yet')" class="w3-btn w3-section" type="submit">
 			<i class="fa fa-paper-plane"></i> SEND MESSAGE
 		</button>
 		</form>
@@ -252,7 +252,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     title: 'Data from Sensor'
                 },
                 width: 1500,
-                height: 800
+                height: 600
             };
 
             var chart = new google.charts.Line(document.getElementById('google_chart'));
