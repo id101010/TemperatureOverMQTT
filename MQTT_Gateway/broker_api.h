@@ -23,12 +23,13 @@
 MQTTAsync client;
 MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
 MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
+MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
 MQTTAsync_token token;
 
 typedef struct message_s{
     // Control Section
     bool isConected;
-    bool finished = 0;
+    bool finished;
 
     char payload;
     char topic;
