@@ -28,7 +28,7 @@ MQTTAsync_token token;
 typedef struct message_s{
     // Control Section
     bool isConected;
-    bool finished;
+    bool finished = 0;
 
     char payload;
     char topic;

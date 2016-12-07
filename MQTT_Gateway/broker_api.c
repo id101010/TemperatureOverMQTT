@@ -68,4 +68,26 @@ void conectToBroker()
     }
 }
 
-void sendMQTTmessage
+void sendMQTTmessage(message_t message)
+{
+    pubmsg.payload = message.payload;
+    pubmsg.payloadlen = strlen(message.payload);
+    pubmsg.qos = QOS;
+    pubmsg.retained = 0;
+    deliveredtoken = 0;
+
+    if(message.isConected != false)
+    {
+       if(MQTTAsync_sendMessage(client, message.topic, &pubmsg, &opts) != MQTTASYNC_SUCCESS)
+       {
+           printf("Failed to start sendMQTTmessage");
+       }
+    }
+    else
+    {
+        printf("Can't send message, no connection established");
+    }
+
+
+
+}
