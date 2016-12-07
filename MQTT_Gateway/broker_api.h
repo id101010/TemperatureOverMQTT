@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <libs/MQTTAsync.h>
 
 
@@ -25,7 +26,19 @@ MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
 MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
 MQTTAsync_token token;
 
+typedef struct message_s{
+    // Control Section
+    bool isConected;
+    bool finished;
+
+    char payload;
+    char topic;
+
+
+}message_t;
+
+message_t messageMQTT;
+
 volatile MQTTAsync_token deliveredtoken;
-int finished = 0;
 
 #endif // BROKER_API_H
