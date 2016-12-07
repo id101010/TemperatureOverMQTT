@@ -3,6 +3,7 @@
 <title>BFH EMBSY Miniproject</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- CSS Library from w3schools.com -->
 <link rel="stylesheet" href="css/w3.css">
 
 
@@ -38,143 +39,153 @@
 <div class="w3-content w3-padding" style="max-width:1564px">
 
   <!-- Project Section -->
-  <div class="w3-container w3-padding-32" id="projects">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Projects</h3>
-    <p> In this project we connected a BLE-Sensor to the RaspberryPi 3 where the data are transmittet to the MQTT Broker. To visualize the data in a chart, we connect to the MQTT Broker.</p>
- </div> 
-
-<div class="w3-row-padding">
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p> Please Connect to the MQTT Broker to get data from sensor</p>
-      </div>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p>Press to disconnect from MQTT Broker</p>
-      </div>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p>Press to stop</p>
-      </div>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p>Press to test the connection TEST</p>
-      </div>
-    </div>
-  </div>
-  
-  <div class="w3-row-padding">
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p><button class="w3-btn-block">connect</button></p>
-      </div>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p><button class="w3-btn-block">disconnect</button></p>
-      </div>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p><button class="w3-btn-block">stop</button></p>
-      </div>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <p><button class="w3-btn-block">test button</button></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="w3-row-padding">
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      
-    </div>
-  </div>
-  
-  <div class="w3-row-padding">
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <div class="w3-display-container">
-        <div id="google_chart" style="width: 1500px; height: 800px"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="w3-row-padding">
-    
-  </div>
-
+	<div class="w3-container w3-padding-32" id="projects">
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Projects</h3>
+		<p> In this project we connected a BLE-Sensor to the RaspberryPi 3 where the data are transmittet to the MQTT Broker. To visualize the data in a chart, we connect to the MQTT Broker.</p>
+	</div> 
+	
+	<!-- Button Head Discription -->
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p> Please Connect to the MQTT Broker to get data from sensor</p>
+			</div>
+		</div>
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p>Press to disconnect from MQTT Broker</p>
+			</div>
+		</div>
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p>Press to stop the visualisation mode</p>
+			</div>
+		</div>
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p>Press to start the visualisation again</p>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Buttons -->
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom"> 
+			<div class="w3-display-container">
+				<p><input type="button" value="connect" onClick="alert('connected')" onClick="connect()" class="w3-btn-block" /></p>
+			</div>
+		</div>
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p><button class="w3-btn-block" onClick="alert('disconnected')" onClick="disconnect()" >disconnect</button></p>
+			</div>
+		</div>
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p><button class="w3-btn-block" onClick="">stop</button></p>
+			</div>
+		</div>
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<p><button class="w3-btn-block" onClick="">start</button></p>
+			</div>
+		</div>
+	</div>
+	
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom">
+		</div>
+	</div>
+	
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<div id="google_chart" style="width: 1500px; height: 800px">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="w3-row-padding">
+		
+	</div>
+	
 
   <!-- About Section -->
-  <div class="w3-container w3-padding-32" id="about">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">About</h3>
-    <p> This is the website for the "Miniproject" in Embedded Systems. The three students from E4p worked for this project.
+	<div class="w3-container w3-padding-32" id="about">
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">About</h3>
+		<p> This is the website for the "Miniproject" in Embedded Systems. The three students from E4p worked for this project.
+		
+		</p>
+	</div>
 	
-    </p>
-  </div>
-
-  <div class="w3-row-padding w3-grayscale">
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <img src="picture/Student_1.jpg" alt="Student_1" style="width:100%">
-      <h3>Simon Schertz</h3>
-      <p class="w3-opacity">Student</p>
-      <p>Student in Electrical Engineering</p>
-      <p><button class="w3-btn-block">Contact</button></p>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <img src="picture/Student_2.jpg" alt="Student_2" style="width:100%">
-      <h3>Marcus Schluep</h3>
-      <p class="w3-opacity">Student</p>
-      <p>Student in Electrical Engineering</p>
-      <p><button class="w3-btn-block">Contact</button></p>
-    </div>
-    <div class="w3-col l3 m6 w3-margin-bottom">
-      <img src="picture/Student_3.jpg" alt="Student_3" style="width:100%">
-      <h3>Aaron Schmocker</h3>
-      <p class="w3-opacity">Student</p>
-      <p>Student in Electrical Engineering</p>
-      <p><button class="w3-btn-block">Contact</button></p>
-    </div>
-	 <div class="w3-col l3 m6 w3-margin-bottom">
-      <img src="picture/vacant.jpg" alt="Student_3" style="width:100%">
-      <h3>software engineer (vacant)</h3>
-      <p class="w3-opacity">Software Engineer</p>
-      <p>the snuffle Software Engineer</p>
-      <p><button class="w3-btn-block">Contact</button></p>
-    </div>
-  </div>
+	<div class="w3-row-padding w3-grayscale">
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<img src="picture/Student_1.jpg" alt="Student_1" style="width:100%">
+			<h3>Simon Schertz</h3>
+			<p class="w3-opacity">Student</p>
+			<p>Student in Electrical Engineering</p>
+			<p><button class="w3-btn-block">Contact</button></p>
+		</div>
+		
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<img src="picture/Student_2.jpg" alt="Student_2" style="width:100%">
+			<h3>Marcus Schluep</h3>
+			<p class="w3-opacity">Student</p>
+			<p>Student in Electrical Engineering</p>
+			<p><button class="w3-btn-block">Contact</button></p>
+		</div>
+		
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<img src="picture/Student_3.jpg" alt="Student_3" style="width:100%">
+			<h3>Aaron Schmocker</h3>
+			<p class="w3-opacity">Student</p>
+			<p>Student in Electrical Engineering</p>
+			<p><button class="w3-btn-block">Contact</button></p>
+		</div>
+		
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<img src="picture/vacant.jpg" alt="Student_3" style="width:100%">
+			<h3>software engineer (vacant)</h3>
+			<p class="w3-opacity">Software Engineer</p>
+			<p>the snuffle Software Engineer</p>
+			<p><button class="w3-btn-block">Contact</button></p>
+		</div>
+	 </div>
 
 
   <!-- Contact Section -->
-  <div class="w3-container w3-padding-32" id="contact">
-    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Contact</h3>
-    <p>Lets get in touch and talk about Embedded Systems and RaspberryPi for our next project.</p>
-    <form action="form.asp" target="_blank">
-      <input class="w3-input" type="text" placeholder="Name" required name="Name">
-      <input class="w3-input w3-section" type="text" placeholder="Email" required name="Email">
-      <input class="w3-input w3-section" type="text" placeholder="Subject" required name="Subject">
-      <input class="w3-input w3-section" type="text" placeholder="Comment" required name="Comment">
-      <button class="w3-btn w3-section" type="submit">
-        <i class="fa fa-paper-plane"></i> SEND MESSAGE
-      </button>
-    </form>
-  </div>
+	<div class="w3-container w3-padding-32" id="contact">
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Contact</h3>
+		<p>Lets get in touch and talk about Embedded Systems and RaspberryPi for our next project.</p>
+		<form action="form.asp" target="_blank">
+		<input class="w3-input" type="text" placeholder="Name" required name="Name">
+		<input class="w3-input w3-section" type="text" placeholder="Email" required name="Email">
+		<input class="w3-input w3-section" type="text" placeholder="Subject" required name="Subject">
+		<input class="w3-input w3-section" type="text" placeholder="Comment" required name="Comment">
+		<button class="w3-btn w3-section" type="submit">
+			<i class="fa fa-paper-plane"></i> SEND MESSAGE
+		</button>
+		</form>
+	</div>
  
  
 <!-- End page content -->
 </div>
 
+
 <!-- Google Map -->
 <div id="googleMap" class="w3-grayscale" style="width:100%;height:450px;"></div>
+
 
 <!-- Footer -->
 <footer class="w3-center w3-black w3-padding-16">
   <p>copyright</p>
 </footer>
 
+
+
+<!-- SCRIPTS -->
 <!-- Add Google Maps -->
 <script src="https://maps.googleapis.com/maps/api/js"></script>
 
@@ -216,7 +227,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
             data.addColumn('string', 'time');
             data.addColumn('number', 'accel');
             data.addColumn('number', 'gyro');
-            data.addColumn('number', 'Temp');
+            data.addColumn('number', 'temp');
 
             data.addRows([
                 ['', 37.8, 80.8, 41.8],
@@ -236,7 +247,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
             ]);
 
 
-
             var options = {
                 chart: {
                     title: 'Data from Sensor'
@@ -249,6 +259,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
             chart.draw(data, options);
         }
     </script>
+
 
 <!-- JavaScript MQTT Communication -->
 	<script type="text/javascript" src="javascript/mqttws31.js"></script>
@@ -294,6 +305,36 @@ google.maps.event.addDomListener(window, 'load', initialize);
         // Called when a message arrives
         function onMessageArrived(message) {
             console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
+			
+// pruefen!!			
+			//check if it is a new topic, if not add it to the array 
+			if (dataTopics.indexOf(message.destinationName) < 0){ 
+ 		     
+	 		    dataTopics.push(message.destinationName); 	//add new topic to array 
+	 		    var y = dataTopics.indexOf(message.destinationName); 	//get the index no 
+	 		     
+	 		    //create new data series for the chart 
+	 			var newseries = { 
+	 		            id: y, 
+	 		            name: message.destinationName, 
+	 		            data: [] 
+	 		            }; 
+	  
+	 			chart.addSeries(newseries); 	//add the series 
+ 		     
+ 		    }; 
+
+			var y = dataTopics.indexOf(message.destinationName); //get the index no of the topic from the array 
+			var myEpoch = new Date().getTime(); //get current epoch time 
+			var thenum = message.payloadString.replace( /^\D+/g, ''); //remove any text spaces from the message 
+			var plotMqtt = [myEpoch, Number(thenum)]; //create the array 
+			if (isNumber(thenum)) { //check if it is a real number and not text 
+				console.log('is a propper number, will send to chart.') 
+				plot(plotMqtt, y);	//send it to the plot function 
+				
+
+				
+			};
         }
 
         function send() {
