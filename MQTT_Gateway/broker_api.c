@@ -67,5 +67,3 @@ void conectToBroker()
             exit(-1);
     }
 }
-
-void sendMQTTmessage
