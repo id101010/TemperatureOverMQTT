@@ -73,7 +73,7 @@
 /*----- Header-Files ---------------------------------------------------------*/
 #include <stdint.h>
 
-#include "libs/jansson/include/jansson.h"
+#include "jansson.h"
 #include "types.h"
 
 /*----- Macros ---------------------------------------------------------------*/
@@ -104,6 +104,9 @@ json_getStringValue(json_t * pJson, char * pcKey);
 
 extern Err
 json_setKeyValue(json_t * pJson, char * pcKey, char * pcValue);
+
+extern Err
+json_insertNestedObj(json_t *jsonMsg, char *nestedObjName, json_t *jsonNestedMsg);
 
 /*----- Data -----------------------------------------------------------------*/
 

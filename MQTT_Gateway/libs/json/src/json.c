@@ -348,3 +348,42 @@ json_setKeyValue(json_t * pJson, char * pcKey, char * pcValue) {
     }
     return (error);
 }
+
+/*******************************************************************************
+ *  function :    json_insertNestedObj
+ ******************************************************************************/
+/** @brief        Creates a nested object withing a parent object.
+ *
+ *  @type         global
+ *
+ *  @param[in]    jsonMsg           json object
+ *  @param[in]    nestedObjName     the name of the nested object
+ *  @param[in]    jsonNestedMsg     nested json object
+ *
+ *  @return       <pre>
+ *                BBB_SUCCESS       on success,
+ *                BBB_ERR_PARAM     if an invalid argument was passed,
+ *                BBB_JSON_PACK     if the key value pair could not be inserted
+ *                </pre>
+ *
+ ******************************************************************************/
+Err json_insertNestedObj(json_t *jsonMsg, char *nestedObjName, json_t *jsonNestedMsg)
+{
+    Err output = NONE;
+
+    if((jsonMsg != NULL) && (nestedObjName != NULL) && (jsonNestedMsg != NULL)) {
+        if (json_object_set_new(jsonMsg, nestedObjName, jsonNestedMsg) == -1) {
+
+              WARNINGPRINT("Can't insert new json object. "
+                           "Obj: %s, Value: %s \n",
+                            nestedObjName, json_string_value(jsonNestedMsg));
+
+            output = ERR_JSON_PACK;
+        }
+    }else {
+        ERRORPRINT("parameter error");
+        output = ERR_PARAM;
+    }
+
+    return(output);
+}

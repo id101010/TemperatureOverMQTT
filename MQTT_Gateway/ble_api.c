@@ -268,7 +268,7 @@ void sensor_get_temperature(connection_t *conn, char *sensor_mac)
         // prepare parent object and add nested object
         json_setKeyValue(jsonMsgGyroConfig, "device", sensor_mac);
         json_setKeyValue(jsonMsgGyroConfig, "command", "ConfigAccel");
-        json_setKeyValue(jsonMsgGyroConfig, "data", json_getString(jsonSubMsgGyroConfig));
+        json_insertNestedObj(jsonMsgGyroConfig, "data", jsonSubMsgGyroConfig);
     }
     // Send Gyroconfig
     send_command(conn, jsonMsgGyroConfig);
