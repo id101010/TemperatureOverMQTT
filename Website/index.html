@@ -27,8 +27,8 @@
 
 
 <!-- Header -->
-<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
-  <img class="w3-image" src="picture/main_electronics.jpg" alt="Electronics" width="1500" height="800">
+<header class="w3-display-container w3-content w3-wide" style="max-width:1200px;" id="home">
+  <img class="w3-image" src="picture/main_electronics.jpg" alt="Electronics" width="1200" height="800">
   <div class="w3-display-middle/ w3-margin-top w3-center">
     <h1 class="w3-xxlarge"><span class="w3-border w3-border-black w3-padding">EMBSY</span> <span class="w3-hide-small">Embedded Systems Miniproject</span></h1>
   </div>
@@ -36,7 +36,7 @@
 
 
 <!-- Page content -->
-<div class="w3-content w3-padding" style="max-width:1564px">
+<div class="w3-content w3-padding" style="max-width:1264px">
 
   <!-- Project Section -->
 	<div class="w3-container w3-padding-32" id="projects">
@@ -58,12 +58,12 @@
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p>Press to stop the visualisation mode</p>
+				<p>Press to stop the visualisation mode to analyze the data</p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p>Press to start the visualisation again</p>
+				<p>Press to start the visualisation again. Start mode ist the default mode.</p>
 			</div>
 		</div>
 	</div>
@@ -87,7 +87,7 @@
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="alert('start - not implemented yet')" onClick="">start</button></p>
+				<p><button class="w3-btn-block"onClick="testmessage()">start</button></p>  <!--onClick="alert('start - not implemented yet')"--> 
 			</div>
 		</div>
 	</div>
@@ -100,7 +100,7 @@
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<div id="google_chart" style="width: 1500px; height: 600px">
+				<div id="google_chart" style="width: 1200px; height: 600px">
 				</div>
 			</div>
 		</div>
@@ -243,7 +243,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 ['', 30.9, 69.5, 32.4, 22],
             	['', 37.8, 80.8, 41.8, 35],
                 ['', 30.9, 69.5, 32.4, 22],
-		        ['', 37.8, 80.8, 41.8, 35],
+		        ['', 37.8, 80.8, 41.8, 75],
                 ['', 30.9, 69.5, 32.4, 22],
             	['', 37.8, 80.8, 41.8, 35],
                 ['', 30.9, 69.5, 32.4, 22],
@@ -267,7 +267,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 chart: {
                     title: 'Data from Sensor'
                 },
-                width: 1500,
+                width: 1200,
                 height: 600
             };
 
@@ -287,6 +287,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
         // Create a client instance
         var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
 
+		// Create data array
+		var data= new Array();
+		
+		
         // Set callback handlers
         client.onConnectionLost = onConnectionLost;
         client.onMessageArrived = onMessageArrived;
@@ -298,25 +302,28 @@ google.maps.event.addDomListener(window, 'load', initialize);
             onSuccess: onConnect,
             onFailure: onConnectionFailure
         });
-
+		
+		
         // Called when the client connects
         function onConnect() {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
-			client.subscribe("EmSby/gruppe_15/test");  // Topics: test, temp, ax, ay, az
-			console.log("subscripe topic: EmSby/gruppe_15/test ");
+			client.subscribe("EmbSy/gruppe_15/#");  // Topics: test, temp, ax, ay, az
+			console.log("subscripe topic: EmbSby/gruppe_15/#");
 			message = new Paho.MQTT.Message("HelloWorld");
-			message.destinationName = "EmSby/gruppe_15/test";
+			message.destinationName = "EmbSy/gruppe_15/test";
 			client.send(message);
-			console.log("test message sent to topic EmSby/gruppe_15/test ");
+			console.log("test message sent to topic EmbSy/gruppe_15/test ");
 			
         }
 
+		
         // Called when the client could not connect
         function onConnectionFailure() {
             console.log("onConnectionFailure");
         }
 
+		
         // Called when the client loses its connection
         function onConnectionLost(responseObject) {
             if (responseObject.errorCode !== 0) {
@@ -324,17 +331,25 @@ google.maps.event.addDomListener(window, 'load', initialize);
             }
         }
 
-		function subscribe( ){
 		
-		}
-
-
         // Called when a message arrives
         function onMessageArrived(message) {
             console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
 			
+			
+			// check Topics
+			
+			
+			
+			// Ringbuffer
+			
+			
+			
+			
+			
+			
 // pruefen!!			
-		/* 	//check if it is a new topic, if not add it to the array 
+		 /*	//check if it is a new topic, if not add it to the array 
 			if (dataTopics.indexOf(message.destinationName) < 0){ 
  		     
 	 		    dataTopics.push(message.destinationName); 	//add new topic to array 
@@ -358,18 +373,29 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			if (isNumber(thenum)) { //check if it is a real number and not text 
 				console.log('is a propper number, will send to chart.') 
 				plot(plotMqtt, y);	//send it to the plot function 
-				
-
-				
 			}; */
         }
 
+		
+		// Testmessage for testing communication to and from MQTT Broker
+		function testmessage() {
+			message = new Paho.MQTT.Message("HelloWorld Test");
+			message.destinationName = "EmbSy/gruppe_15/test";
+			client.send(message);
+			console.log("first test message sent to topic EmbSy/gruppe_15/test ");
+			message = new Paho.MQTT.Message("Testmessage 2");
+			message.destinationName = "EmbSy/gruppe_15/test";
+			client.send(message);
+			console.log("second test message sent to topic EmbSy/gruppe_15/test ");
+		}
+		
+		
         function send() {
             if (!client) {
                 return;
             }
             var message = new Paho.MQTT.Message("Hello");
-            message.destinationName = "test/world";
+            message.destinationName = "EmbSy/gruppe_15/test";
             client.send(message);
         }
     </script>
