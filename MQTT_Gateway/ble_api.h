@@ -1,6 +1,20 @@
 #ifndef BLE_API_H
 #define BLE_API_H
 
+/*
+ *  function    debug
+ *              init_connect_obj
+ *              socket_get_connection
+ *              send_command
+ *              recieve_answer
+ *              sensor_connect
+ *              sensor_disconnect
+ *              sensor_scan
+ *              sensor_get_temperature
+ *
+ ******************************************************************************/
+
+/*----- Header-Files ---------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +23,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <json.h>
 
+/*----- Macros ---------------------------------------------------------------*/
 #define DEBUG
 
 #define STRING_SIZE         1000
@@ -23,6 +39,7 @@
 #define CMD_GETTEMPERATURE  "{\"device\":\""SENSOR_MAC"\",\"command\":\"GetTemperature\"}"
 #define CMD_ENABLE_GYRO     "{\"device\":\""SENSOR_MAC"\",\"command\":\"ConfigGyro\",\"data\":{\"on\":true,\"fullscale\":500,\"odr\":95}}"
 
+/*----- Data types -----------------------------------------------------------*/
 typedef struct connection_s {
     // Control section
     bool is_connected;
@@ -38,14 +55,17 @@ typedef struct connection_s {
 
 } connection_t;
 
+/*----- Function prototypes --------------------------------------------------*/
 void debug(const char *msg);
 void init_connect_obj(connection_t *conn);
 void socket_get_connection(connection_t *conn);
-void send_command(connection_t *conn, char *command);
+void send_command(connection_t *conn, json_t *jsonMsg);
 void recieve_answer(connection_t *conn);
-void sensor_connect(connection_t *conn);
-void sensor_disconnect(connection_t *conn);
-void sensor_scan(connection_t *conn);
-void sensor_get_temperature(connection_t *conn);
+void sensor_connect(connection_t *conn, char *sensor_mac);
+void sensor_disconnect(connection_t *conn, char *sensor_mac);
+void sensor_ble_scan(connection_t *conn);
+void sensor_get_temperature(connection_t *conn, char *sensor_mac);
+
+/*----- Data -----------------------------------------------------------------*/
 
 #endif // BLE_API_H
