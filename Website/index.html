@@ -221,7 +221,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
         // Load package
         google.charts.load('current', {packages: ['line']});
         google.charts.setOnLoadCallback(drawChart);
-
+		
+		var i=0;
+		var maxLength=100;
+		
         function drawChart() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'time');
@@ -231,6 +234,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			data.addColumn('number', 'az');
 			
             data.addRows([
+			/*	for (i=0; i < maxLength; i++){
+				['', circular_temp[i], circular_ax[i], circular_ay[i], circular_az[i]]
+				}
+			*/
                 ['', 37.8, 80.8, 41.8, 35],
                 ['', 30.9, 69.5, 32.4, 22],
             	['', 37.8, 80.8, 41.8, 35],
@@ -287,10 +294,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
         // Create a client instance
         var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
 
-		// Create data array
-		var data= new Array();
-		
-		
+		// Create circular Array
+		var circular_temp = new Array();
+		var circular_ax = new Array();
+		var circular_ay = new Array();
+		var circular_az = new Array();
+		var maxLength = 100;	
+			
+			
         // Set callback handlers
         client.onConnectionLost = onConnectionLost;
         client.onMessageArrived = onMessageArrived;
@@ -336,57 +347,70 @@ google.maps.event.addDomListener(window, 'load', initialize);
         function onMessageArrived(message) {
             console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
 			
-			
 			// check Topics
+			switch(message.destinationName){
+			case "EmbSy/gruppe_15/temp":
+				add_temp(message.payloadString);
+				console.log("add_temp: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+				break;
+			case "EmbSy/gruppe_15/ax":
+				add_ax(message.payloadString);
+				console.log("add_ax: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+				break;
+			case "EmbSy/gruppe_15/ay":
+				add_ay(message.payloadString);
+				console.log("add_ay: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+				break;
+			case "EmbSy/gruppe_15/az":
+				add_az(message.payloadString);
+				console.log("add_az: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+				brake
+			default:
+			console.log("NO_ADD: Message with unknown topic=" + message.destinationName + ", message=" + message.payloadString);
+			}
 			
+		}	
 			
+		// Circular Array	
+		var add_temp = function(element){
+			if(circular_temp.length == maxLength){
+				circular_temp.pop();
+			}
+			circular_temp.unshift(element);
+		};
 			
-			// Ringbuffer
-			
-			
-			
-			
-			
-			
-// pruefen!!			
-		 /*	//check if it is a new topic, if not add it to the array 
-			if (dataTopics.indexOf(message.destinationName) < 0){ 
- 		     
-	 		    dataTopics.push(message.destinationName); 	//add new topic to array 
-	 		    var y = dataTopics.indexOf(message.destinationName); 	//get the index no 
-	 		     
-	 		    //create new data series for the chart 
-	 			var newseries = { 
-	 		            id: y, 
-	 		            name: message.destinationName, 
-	 		            data: [] 
-	 		            }; 
-	  
-	 			chart.addSeries(newseries); 	//add the series 
- 		     
- 		    }; 
+		var add_ax = function(element){
+			if(circular_ax.length == maxLength){
+				circular_ax.pop();
+			}
+			circular_ax.unshift(element);
+		};
 
-			var y = dataTopics.indexOf(message.destinationName); //get the index no of the topic from the array 
-			var myEpoch = new Date().getTime(); //get current epoch time 
-			var thenum = message.payloadString.replace( /^\D+/g, ''); //remove any text spaces from the message 
-			var plotMqtt = [myEpoch, Number(thenum)]; //create the array 
-			if (isNumber(thenum)) { //check if it is a real number and not text 
-				console.log('is a propper number, will send to chart.') 
-				plot(plotMqtt, y);	//send it to the plot function 
-			}; */
-        }
+		var add_ay = function(element){
+			if(circular_ay.length == maxLength){
+				circular_ay.pop();
+			}
+			circular_ay.unshift(element);
+		};
 
-		
+		var add_az = function(element){
+			if(circular_az.length == maxLength){
+				circular_az.pop();
+			}
+			circular_az.unshift(element);
+		};		
+			
+				
 		// Testmessage for testing communication to and from MQTT Broker
 		function testmessage() {
 			message = new Paho.MQTT.Message("HelloWorld Test");
 			message.destinationName = "EmbSy/gruppe_15/test";
 			client.send(message);
 			console.log("first test message sent to topic EmbSy/gruppe_15/test ");
-			message = new Paho.MQTT.Message("Testmessage 2");
-			message.destinationName = "EmbSy/gruppe_15/test";
+			message = new Paho.MQTT.Message("12");
+			message.destinationName = "EmbSy/gruppe_15/temp";
 			client.send(message);
-			console.log("second test message sent to topic EmbSy/gruppe_15/test ");
+			console.log("second test message sent to topic EmbSy/gruppe_15/temp ");
 		}
 		
 		
