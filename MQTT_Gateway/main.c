@@ -14,7 +14,7 @@ int main(void)
     socket_get_connection(&conn);
 
     // Do a ble scan
-    //sensor_ble_scan(&conn);
+    sensor_ble_scan(&conn);
 
     // Connect to sensor
     sensor_connect(&conn, SENSOR_MAC);

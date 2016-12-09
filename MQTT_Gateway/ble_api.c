@@ -1,8 +1,10 @@
 /*----- Header-Files ---------------------------------------------------------*/
+#include <sys/time.h>
 #include "ble_api.h"
 #include "json.h"
 
-/*----- Macros ---------------------------------------------------------------*/
+/*----- Defines --------------------------------------------------------------*/
+#define RECV_TIMEOUT_SEC 10
 
 /*----- Data types -----------------------------------------------------------*/
 
@@ -120,11 +122,22 @@ void send_command(connection_t *conn, json_t *jsonMsg)
 void recieve_answer(connection_t *conn)
 {
     int length = 0;
+    struct timeval tv;
 
-    // Read response from socket
-    length = recv(conn->socket_fd, conn->answer, STRING_SIZE-1, 0);
-    conn->answer[length] = '\0'; // Append nullterminator
-    printf(conn->answer);
+    tv.tv_sec = RECV_TIMEOUT_SEC;
+    tv.tv_usec = 0;
+
+    // Set socket timeout to 30s using a posix timer
+    setsockopt(conn->socket_fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,sizeof(struct timeval));
+
+    // Read response from socket and handle timeout
+     while((length = recv(conn->socket_fd, conn->answer, STRING_SIZE-1, 0) == -1)){
+         debug("Socket recv timeout reached.");
+         return;
+     }
+
+     conn->answer[length] = '\0'; // Append nullterminator
+     printf(conn->answer);
 }
 
 /*******************************************************************************
@@ -158,7 +171,7 @@ void sensor_connect(connection_t *conn, char *sensor_mac){
     // send the crafted command as string
     send_command(conn, jsonMsg);
     // recieve the answer
-    //recieve_answer(conn);
+    recieve_answer(conn);
     // set the connected flag
     conn->is_connected = true;
     // Don ’t forget to free Json object !
@@ -195,7 +208,7 @@ void sensor_disconnect(connection_t *conn, char *sensor_mac){
     // send the crafted command as string
     send_command(conn, jsonMsg);
     // recieve the answer
-    //recieve_answer(conn);
+    recieve_answer(conn);
     // set the connected flag to false
     conn->is_connected = false;
     // Don ’t forget to free Json object !
@@ -274,7 +287,7 @@ void sensor_get_temperature(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgGyroConfig);
 
     // recieve answer
-    //recieve_answer(conn);
+    recieve_answer(conn);
 
     // ---- Temperature
     if (jsonMsgTemperature != NULL) {
