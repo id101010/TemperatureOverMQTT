@@ -123,11 +123,11 @@
 	</div>
 	
 	
-	<!-- Google Chart Gyro-->
+	<!-- Google Chart accel-->
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<div id="google_chart_gyro" style="width: 1200px; height: 600px">
+				<div id="google_chart_accel" style="width: 1200px; height: 600px">
 				</div>
 			</div>
 		</div>
@@ -263,22 +263,22 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		window.cA_temp = cA_temp;
 
 		
-		var data_gyro = new Array(100);
+		var data_accel = new Array(100);
 		var data_temp = new Array(100);
-		window.data_gyro = data_gyro;
+		window.data_accel = data_accel;
 		window.data_temp = data_temp;
 			
 		for (var i = 0; i < maxLength; ++i) {
-				data_gyro[i] = new Array(4);
+				data_accel[i] = new Array(4);
 			}
 			
 		for (i=0; i < maxLength; i++) {
-			data_gyro[i][1] = Number("0");
-			data_gyro[i][2] = Number("0");
-			data_gyro[i][3] = Number("0");
+			data_accel[i][1] = Number("0");
+			data_accel[i][2] = Number("0");
+			data_accel[i][3] = Number("0");
 			data_temp[i] = Number("0");
 			// check data init
-		//	console.log("data_gyro init = " + data_gyro);
+		//	console.log("data_accel init = " + data_accel);
 		//	console.log("data_temp init = " + data_temp);
 		}
 			
@@ -301,7 +301,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		// Load package
         google.charts.load('current', {packages: ['line']});
         google.charts.setOnLoadCallback(drawChart_temp);
-		google.charts.setOnLoadCallback(drawChart_gyro);
+		google.charts.setOnLoadCallback(drawChart_accel);
 		
 		var i=0;
 		var maxLength=100;
@@ -334,7 +334,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			});
         }
 
-		function drawChart_gyro() {
+		function drawChart_accel() {
 			var data = new google.visualization.DataTable();
             data.addColumn('string', 'time');
 			data.addColumn('number', 'ax');
@@ -343,19 +343,19 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			
 			for (i=0; i < maxLength; i++){
 				data.addRows([
-				['', Number(data_gyro[i][1]), Number(data_gyro[i][2]), Number(data_gyro[i][3])]	
+				['', Number(data_accel[i][1]), Number(data_accel[i][2]), Number(data_accel[i][3])]	
 			]);
 			}
 
 		   var options = {
 				chart: {
-                   title: 'Gyro Data from Sensor'
+                   title: 'accel Data from Sensor'
                 },
                 width: 1200,
                 height: 500
             };
 			
-			var chart = new google.charts.Line(document.getElementById('google_chart_gyro'));
+			var chart = new google.charts.Line(document.getElementById('google_chart_accel'));
             chart.draw(data, options);
 			
 			google.visualization.events.addListener(chart, 'error', function (googleError) {
@@ -414,16 +414,16 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			}
 			
 			for (i=0; i < maxLength; i++){
-				data_gyro[i][1] = cA_ax[i];
-				data_gyro[i][2] = cA_ay[i];
-				data_gyro[i][3] = cA_az[i];
+				data_accel[i][1] = cA_ax[i];
+				data_accel[i][2] = cA_ay[i];
+				data_accel[i][3] = cA_az[i];
 				data_temp[i] = cA_temp[i];
 			}
-			//console.log("data_gyro=" + data_gyro);
+			//console.log("data_accel=" + data_accel);
 			//console.log("data_temp=" + data_temp);
 			
 			drawChart_temp();
-			drawChart_gyro();
+			drawChart_accel();
 	
 		}	
 		
