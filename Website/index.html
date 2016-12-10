@@ -97,10 +97,11 @@
 		</div>
 	</div>
 	
+	<!-- Google Chart -->
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<div id="google_chart" style="width: 1200px; height: 600px">
+				<div id="google_chart_temp" style="width: 1200px; height: 600px">
 				</div>
 			</div>
 		</div>
@@ -219,7 +220,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
     <script type="text/javascript">
         // Load package
-        google.charts.load('current', {packages: ['line']});
+    /*    google.charts.load('current', {packages: ['line']});
         google.charts.setOnLoadCallback(drawChart);
 		
 		var i=0;
@@ -229,16 +230,16 @@ google.maps.event.addDomListener(window, 'load', initialize);
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'time');
             data.addColumn('number', 'temp');
-			data.addColumn('number', 'ax');
-			data.addColumn('number', 'ay');
-			data.addColumn('number', 'az');
+		//	data.addColumn('number', 'ax');
+		//	data.addColumn('number', 'ay');
+		//	data.addColumn('number', 'az');
 			
-            data.addRows([
-			/*	for (i=0; i < maxLength; i++){
-				['', circular_temp[i], circular_ax[i], circular_ay[i], circular_az[i]]
-				}
-			*/
-                ['', 37.8, 80.8, 41.8, 35],
+			for (i=0; i < maxLength; i++)
+				data.addRows([
+				['', data_temp[i]]
+			
+			/*
+				['', 37.8, 80.8, 41.8, 35],
                 ['', 30.9, 69.5, 32.4, 22],
             	['', 37.8, 80.8, 41.8, 35],
                 ['', 30.9, 69.5, 32.4, 22],
@@ -266,8 +267,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 ['', 30.9, 69.5, 32.4, 22],
             	['', 37.8, 80.8, 41.8, 35],
                 ['', 30.9, 69.5, 32.4, 22],
-				
-            ]);
+				]
+			*/	
+         /*   
+			]);
+			
 
 
             var options = {
@@ -278,9 +282,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 height: 600
             };
 
-            var chart = new google.charts.Line(document.getElementById('google_chart'));
+            var chart = new google.charts.Line(document.getElementById('google_chart_temp'));
             chart.draw(data, options);
-        }
+        }*/
     </script>
 
 
@@ -295,12 +299,26 @@ google.maps.event.addDomListener(window, 'load', initialize);
         var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
 
 		// Create circular Array
-		var circular_temp = new Array();
-		var circular_ax = new Array();
-		var circular_ay = new Array();
-		var circular_az = new Array();
+		var cA_temp = new Array();
+		var cA_ax = new Array();
+		var cA_ay = new Array();
+		var cA_az = new Array();
+		var data = new Array(100);
 		var maxLength = 100;	
-			
+		window.cA_ax = cA_ax;	
+		window.cA_ay = cA_ay;
+		window.cA_az = cA_az;
+		window.cA_temp = cA_temp;
+
+		
+		var data_giro = new Array(100);
+		var data_temp = new Array(100);
+		window.data_giro = data_giro;
+		window.data_temp = data_temp;
+		
+		for (var i = 0; i < maxLength; ++i) {
+				data_giro[i] = new Array(4);
+			}
 			
         // Set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -315,17 +333,79 @@ google.maps.event.addDomListener(window, 'load', initialize);
         });
 		
 		
+		// Google Chart
+		// Load package
+        google.charts.load('current', {packages: ['line']});
+        google.charts.setOnLoadCallback(drawChart);
+		
+		var i=0;
+		var maxLength=100;
+		
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'time');
+            data.addColumn('number', 'temp');
+		//	data.addColumn('number', 'ax');
+		//	data.addColumn('number', 'ay');
+		//	data.addColumn('number', 'az');
+			
+			for (i=0; i < maxLength; i++){
+				data.addRows([
+				['', data_temp[i]]
+			
+			/*
+				['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+                ['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+			    ['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+		        ['', 37.8, 80.8, 41.8, 75],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+	            ['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+	            ['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+                ['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+            	['', 37.8, 80.8, 41.8, 35],
+                ['', 30.9, 69.5, 32.4, 22],
+				]
+			*/	
+            
+			]);
+			}
+            var options = {
+                chart: {
+                    title: 'Temperature Data from Sensor'
+                },
+                width: 1200,
+                height: 600
+            };
+
+            var chart = new google.charts.Line(document.getElementById('google_chart_temp'));
+            chart.draw(data, options);
+        }
+
+		
         // Called when the client connects
         function onConnect() {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
 			client.subscribe("EmbSy/gruppe_15/#");  // Topics: test, temp, ax, ay, az
-			console.log("subscripe topic: EmbSby/gruppe_15/#");
-			message = new Paho.MQTT.Message("HelloWorld");
-			message.destinationName = "EmbSy/gruppe_15/test";
-			client.send(message);
-			console.log("test message sent to topic EmbSy/gruppe_15/test ");
-			
+			console.log("subscribe topic: EmbSby/gruppe_15/#");			
         }
 
 		
@@ -345,72 +425,110 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		
         // Called when a message arrives
         function onMessageArrived(message) {
-            console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
+        //    console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
 			
 			// check Topics
 			switch(message.destinationName){
 			case "EmbSy/gruppe_15/temp":
 				add_temp(message.payloadString);
-				console.log("add_temp: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+			//	console.log("add_temp: topic=" + message.destinationName + ", temp=" + message.payloadString);
 				break;
 			case "EmbSy/gruppe_15/ax":
 				add_ax(message.payloadString);
-				console.log("add_ax: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+			//	console.log("add_ax: topic=" + message.destinationName + ", ax=" + message.payloadString);
 				break;
 			case "EmbSy/gruppe_15/ay":
 				add_ay(message.payloadString);
-				console.log("add_ay: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+			//	console.log("add_ay: topic=" + message.destinationName + ", ay=" + message.payloadString);
 				break;
 			case "EmbSy/gruppe_15/az":
 				add_az(message.payloadString);
-				console.log("add_az: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
-				brake
+			//	console.log("add_az: topic=" + message.destinationName + ", az=" + message.payloadString);
+				break;
 			default:
 			console.log("NO_ADD: Message with unknown topic=" + message.destinationName + ", message=" + message.payloadString);
 			}
 			
+			for (i=0; i < maxLength; i++){
+				/*data_giro[i][0] = '';*/
+				data_giro[i][1] = cA_ax[i];
+				data_giro[i][2] = cA_ay[i];
+				data_giro[i][3] = cA_az[i];
+				data_temp[i] = cA_temp[i];
+			}
+			console.log("data_giro=" + data_giro);
+			console.log("data_temp=" + data_temp);
+			drawChart();
 		}	
-			
+		
+		
 		// Circular Array	
 		var add_temp = function(element){
-			if(circular_temp.length == maxLength){
-				circular_temp.pop();
+			if(cA_temp.length == maxLength){
+				cA_temp.pop();
 			}
-			circular_temp.unshift(element);
+			cA_temp.unshift(element);
 		};
 			
 		var add_ax = function(element){
-			if(circular_ax.length == maxLength){
-				circular_ax.pop();
+			if(cA_ax.length == maxLength){
+				cA_ax.pop();
 			}
-			circular_ax.unshift(element);
+			cA_ax.unshift(element);
 		};
 
 		var add_ay = function(element){
-			if(circular_ay.length == maxLength){
-				circular_ay.pop();
+			if(cA_ay.length == maxLength){
+				cA_ay.pop();
 			}
-			circular_ay.unshift(element);
+			cA_ay.unshift(element);
 		};
 
 		var add_az = function(element){
-			if(circular_az.length == maxLength){
-				circular_az.pop();
+			if(cA_az.length == maxLength){
+				cA_az.pop();
 			}
-			circular_az.unshift(element);
+			cA_az.unshift(element);
 		};		
 			
 				
-		// Testmessage for testing communication to and from MQTT Broker
+		// Testmessage for testing communication to, and from the MQTT Broker
 		function testmessage() {
-			message = new Paho.MQTT.Message("HelloWorld Test");
-			message.destinationName = "EmbSy/gruppe_15/test";
-			client.send(message);
-			console.log("first test message sent to topic EmbSy/gruppe_15/test ");
-			message = new Paho.MQTT.Message("12");
+			message = new Paho.MQTT.Message("25");
 			message.destinationName = "EmbSy/gruppe_15/temp";
 			client.send(message);
-			console.log("second test message sent to topic EmbSy/gruppe_15/temp ");
+			//console.log("first test message sent to topic EmbSy/gruppe_15/temp ");
+			
+			message = new Paho.MQTT.Message("19");
+			message.destinationName = "EmbSy/gruppe_15/temp";
+			client.send(message);
+			//console.log("second test message sent to topic EmbSy/gruppe_15/temp ");
+			
+			message = new Paho.MQTT.Message("111");
+			message.destinationName = "EmbSy/gruppe_15/ax";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("112");
+			message.destinationName = "EmbSy/gruppe_15/ax";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("211");
+			message.destinationName = "EmbSy/gruppe_15/ay";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("212");
+			message.destinationName = "EmbSy/gruppe_15/ay";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("311");
+			message.destinationName = "EmbSy/gruppe_15/az";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("312");
+			message.destinationName = "EmbSy/gruppe_15/az";
+			client.send(message);
+			
+		//	console.log("cA_temp =" + cA_temp + "cA_ax=" + cA_ax + "cA_ay=" + cA_ay + "cA_az=" + cA_az);			
 		}
 		
 		
@@ -418,7 +536,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
             if (!client) {
                 return;
             }
-            var message = new Paho.MQTT.Message("Hello");
+            var message = new Paho.MQTT.Message("First test message: Hello");
             message.destinationName = "EmbSy/gruppe_15/test";
             client.send(message);
         }
