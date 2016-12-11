@@ -83,7 +83,6 @@ int main(int argc, char **argv)
     // Disconnect from sensor
     //sensor_disconnect(&conn, SENSOR_MAC);
 
-
     // Cleanup
     pthread_cancel(listener);
     free_connect_obj(&conn);
