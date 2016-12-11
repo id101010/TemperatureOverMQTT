@@ -32,13 +32,6 @@
 #define SOCKET_PATH         "/tmp/sensor-hub.socket"
 #define SENSOR_MAC          "CC:85:C8:56:E5:DD"
 
-#define CMD_START_BLE_SCAN  "{\"device\":\"\",\"command\":\"StartBleScan\"}"
-#define CMD_CONNECT         "{\"device\":\""SENSOR_MAC"\",\"command\":\"Connect\"}"
-#define CMD_DISCONNECT      "{\"device\":\""SENSOR_MAC"\",\"command\":\"Disconnect\"}"
-#define CMD_GETDEVINFO      "{\"device\":\""SENSOR_MAC"\",\"command\":\"GetDeviceInfo\"}"
-#define CMD_GETTEMPERATURE  "{\"device\":\""SENSOR_MAC"\",\"command\":\"GetTemperature\"}"
-#define CMD_ENABLE_GYRO     "{\"device\":\""SENSOR_MAC"\",\"command\":\"ConfigGyro\",\"data\":{\"on\":true,\"fullscale\":500,\"odr\":95}}"
-
 /*----- Data types -----------------------------------------------------------*/
 typedef struct connection_s {
     // Control section
@@ -63,10 +56,11 @@ void free_connect_obj(connection_t *conn);
 void socket_get_connection(connection_t *conn);
 
 void send_command(connection_t *conn, json_t *jsonMsg);
-void recieve_answer(connection_t *conn);
+bool recieve_answer(connection_t *conn, char *output);
 
 bool sensor_connect(connection_t *conn, char *sensor_mac);
 bool sensor_disconnect(connection_t *conn, char *sensor_mac);
+void sensor_force_disconnect(connection_t *conn, char *sensor_mac);
 
 void sensor_get_ble_scan(connection_t *conn);
 void sensor_get_single_temperature(connection_t *conn, char *sensor_mac);
