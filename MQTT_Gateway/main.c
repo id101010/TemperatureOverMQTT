@@ -14,19 +14,28 @@ int main(void)
     socket_get_connection(&conn);
 
     // Do a ble scan
-    sensor_ble_scan(&conn);
+    sensor_get_ble_scan(&conn);
+
+    // Try to disconnect if already connected
+    //conn.is_connected = true;
+    //sensor_disconnect(&conn, SENSOR_MAC);
+    //conn.is_connected = false;
 
     // Connect to sensor
-    sensor_connect(&conn, SENSOR_MAC);
+    if(sensor_connect(&conn, SENSOR_MAC)){
+        debug("Sensor connected, yaaay!");
+    }
 
     // Read Temperature from ble sensor
-    sensor_get_temperature(&conn, SENSOR_MAC);
+    //sensor_start_temperature_sampler(&conn, SENSOR_MAC);
 
     // Disconnect from sensor
-    sensor_disconnect(&conn, SENSOR_MAC);
+    if(sensor_disconnect(&conn, SENSOR_MAC)){
+        debug("Sensor disconnected, yaaay!");
+    }
 
-    // Close socket
-    close(conn.socket_fd);
+    // Cleanup
+    free_connect_obj(&conn);
 
     // Exit
     return(EXIT_SUCCESS);

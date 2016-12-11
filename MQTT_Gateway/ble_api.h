@@ -47,6 +47,7 @@ typedef struct connection_s {
     // Command section
     char command[STRING_SIZE];
     char answer[STRING_SIZE];
+    json_t *jsonMsg;
 
     // Socket section
     int socket_fd;
@@ -58,13 +59,17 @@ typedef struct connection_s {
 /*----- Function prototypes --------------------------------------------------*/
 void debug(const char *msg);
 void init_connect_obj(connection_t *conn);
+void free_connect_obj(connection_t *conn);
 void socket_get_connection(connection_t *conn);
+
 void send_command(connection_t *conn, json_t *jsonMsg);
-void recieve_answer(connection_t *conn);
-void sensor_connect(connection_t *conn, char *sensor_mac);
-void sensor_disconnect(connection_t *conn, char *sensor_mac);
-void sensor_ble_scan(connection_t *conn);
-void sensor_get_temperature(connection_t *conn, char *sensor_mac);
+json_t *recieve_answer(connection_t *conn);
+
+bool sensor_connect(connection_t *conn, char *sensor_mac);
+bool sensor_disconnect(connection_t *conn, char *sensor_mac);
+
+void sensor_get_ble_scan(connection_t *conn);
+void sensor_get_single_temperature(connection_t *conn, char *sensor_mac);
 
 /*----- Data -----------------------------------------------------------------*/
 
