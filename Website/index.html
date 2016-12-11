@@ -19,8 +19,10 @@
     <!-- Float links to the right. Hide them on small screens -->
     <li class="w3-right w3-hide-small">
       <a href="#projects" class="w3-left">Projects</a>
+	  <a href="#gcharts" class="w3-left">Data-Charts</a>
       <a href="#about" class="w3-left">About</a>
       <a href="#contact" class="w3-left w3-margin-right">Contact</a>
+	  <a href="#position" class="w3-left w3-margin-right">Position</a>
     </li>
   </ul>
 </div>
@@ -38,11 +40,22 @@
 <!-- Page content -->
 <div class="w3-content w3-padding" style="max-width:1264px">
 
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
+		</div>
+	</div>
+	
   <!-- Project Section -->
 	<div class="w3-container w3-padding-32" id="projects">
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Projects</h3>
 		<p> In this project we connected a BLE-Sensor to the RaspberryPi 3 where the data are transmittet to the MQTT Broker. To visualize the data in a chart, we connect to the MQTT Broker.</p>
 	</div> 
+		
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
+		</div>
+	</div>
+	
 	
 	<!-- Button Head Discription -->
 	<div class="w3-row-padding">
@@ -53,7 +66,7 @@
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p>Press to disconnect from MQTT Broker</p>
+				<p>Press to send testdata to the MQTT Broker and get them automatically back to the Chart, "connect" necessary</p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
@@ -72,12 +85,12 @@
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom"> 
 			<div class="w3-display-container">
-				<p><input type="button" value="connect" onClick="alert('connected - not implemented yet - auto connect look at console')" onClick="client.connect()" class="w3-btn-block" /></p>
+				<p><input type="button" value="connect" onClick="ButtonConnect()" class="w3-btn-block" /></p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="alert('disconnected - not implemented yet')" onClick="client.disconnect()" >disconnect</button></p>
+				<p><button class="w3-btn-block" onClick="testmessage()" >test</button></p>
 			</div>
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
@@ -87,29 +100,39 @@
 		</div>
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<p><button class="w3-btn-block"onClick="testmessage()">start</button></p>  <!--onClick="alert('start - not implemented yet')"--> 
+				<p><button class="w3-btn-block"onClick="alert('start - not implemented yet')">start</button></p>  <!--onClick="alert('start - not implemented yet')"--> 
 			</div>
 		</div>
 	</div>
-	
+	<div class="w3-container w3-padding-32" id="gcharts">
 	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom">
+		<div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
 		</div>
 	</div>
 	
+	
+	<!-- Google Chart -->
+	<!-- Google Chart Temperature-->
 	<div class="w3-row-padding">
 		<div class="w3-col l3 m6 w3-margin-bottom">
 			<div class="w3-display-container">
-				<div id="google_chart" style="width: 1200px; height: 600px">
+				<div id="google_chart_temp" style="width: 1200px; height: 650px">
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<div class="w3-row-padding">
-		
-	</div>
 	
+	<!-- Google Chart accel-->
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<div id="google_chart_accel" style="width: 1200px; height: 600px">
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
 
   <!-- About Section -->
 	<div class="w3-container w3-padding-32" id="about">
@@ -169,13 +192,14 @@
 		</form>
 	</div>
  
+	<!-- Google Map -->
+	<div class="w3-container w3-padding-32" id="position">
+		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Position</h3>
+		<div id="googleMap" class="w3-grayscale" style="width:1200px;height:450px;"></div>
+	</div>
  
 <!-- End page content -->
 </div>
-
-
-<!-- Google Map -->
-<div id="googleMap" class="w3-grayscale" style="width:100%;height:450px;"></div>
 
 
 <!-- Footer -->
@@ -215,77 +239,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 
 
-<!-- Add Google charts -->
-<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        // Load package
-        google.charts.load('current', {packages: ['line']});
-        google.charts.setOnLoadCallback(drawChart);
-		
-		var i=0;
-		var maxLength=100;
-		
-        function drawChart() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'time');
-            data.addColumn('number', 'temp');
-			data.addColumn('number', 'ax');
-			data.addColumn('number', 'ay');
-			data.addColumn('number', 'az');
-			
-            data.addRows([
-			/*	for (i=0; i < maxLength; i++){
-				['', circular_temp[i], circular_ax[i], circular_ay[i], circular_az[i]]
-				}
-			*/
-                ['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-                ['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-			    ['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-		        ['', 37.8, 80.8, 41.8, 75],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-	            ['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-	            ['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-                ['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-            	['', 37.8, 80.8, 41.8, 35],
-                ['', 30.9, 69.5, 32.4, 22],
-				
-            ]);
-
-
-            var options = {
-                chart: {
-                    title: 'Data from Sensor'
-                },
-                width: 1200,
-                height: 600
-            };
-
-            var chart = new google.charts.Line(document.getElementById('google_chart'));
-            chart.draw(data, options);
-        }
-    </script>
-
-
-<!-- JavaScript MQTT Communication -->
+<!-- JavaScript MQTT Communication and visualization on Google Charts -->
 	<script type="text/javascript" src="javascript/mqttws31.js"></script>
+	<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
     <script type="text/javascript">
         // Parameters
         var hostname = "147.87.98.17";
@@ -295,17 +251,42 @@ google.maps.event.addDomListener(window, 'load', initialize);
         var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
 
 		// Create circular Array
-		var circular_temp = new Array();
-		var circular_ax = new Array();
-		var circular_ay = new Array();
-		var circular_az = new Array();
+		var cA_temp = new Array();
+		var cA_ax = new Array();
+		var cA_ay = new Array();
+		var cA_az = new Array();
+		var data = new Array(100);
 		var maxLength = 100;	
+		window.cA_ax = cA_ax;	
+		window.cA_ay = cA_ay;
+		window.cA_az = cA_az;
+		window.cA_temp = cA_temp;
+
+		
+		var data_accel = new Array(100);
+		var data_temp = new Array(100);
+		window.data_accel = data_accel;
+		window.data_temp = data_temp;
 			
+		for (var i = 0; i < maxLength; ++i) {
+				data_accel[i] = new Array(4);
+			}
+			
+		for (i=0; i < maxLength; i++) {
+			data_accel[i][1] = Number("0");
+			data_accel[i][2] = Number("0");
+			data_accel[i][3] = Number("0");
+			data_temp[i] = Number("0");
+			// check data init
+		//	console.log("data_accel init = " + data_accel);
+		//	console.log("data_temp init = " + data_temp);
+		}
 			
         // Set callback handlers
         client.onConnectionLost = onConnectionLost;
         client.onMessageArrived = onMessageArrived;
-
+		
+		function ButtonConnect(){
         // Connect the client
         client.connect({
             userName: "gruppe_15",
@@ -313,19 +294,82 @@ google.maps.event.addDomListener(window, 'load', initialize);
             onSuccess: onConnect,
             onFailure: onConnectionFailure
         });
+		}
 		
+		
+		// Google Chart
+		// Load package
+        google.charts.load('current', {packages: ['line']});
+        google.charts.setOnLoadCallback(drawChart_temp);
+		google.charts.setOnLoadCallback(drawChart_accel);
+		
+		var i=0;
+		var maxLength=100;
+		
+        function drawChart_temp() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'time');
+            data.addColumn('number', 'temp');
+			
+			for (i=0; i < maxLength; i++){
+				data.addRows([
+				['', Number(data_temp[i])] 
+			]);
+			}
+			
+            var options = {
+                chart: {
+                    title: 'Temperature Data from Sensor'
+                },
+                width: 1200,
+                height: 600
+            };
+
+            var chart = new google.charts.Line(document.getElementById('google_chart_temp'));
+            chart.draw(data, options);	
+			
+			google.visualization.events.addListener(chart, 'error', function (googleError) {
+			google.visualization.errors.removeError(googleError.id);
+			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
+			});
+        }
+
+		function drawChart_accel() {
+			var data = new google.visualization.DataTable();
+            data.addColumn('string', 'time');
+			data.addColumn('number', 'ax');
+			data.addColumn('number', 'ay');
+			data.addColumn('number', 'az');
+			
+			for (i=0; i < maxLength; i++){
+				data.addRows([
+				['', Number(data_accel[i][1]), Number(data_accel[i][2]), Number(data_accel[i][3])]	
+			]);
+			}
+
+		   var options = {
+				chart: {
+                   title: 'accel Data from Sensor'
+                },
+                width: 1200,
+                height: 500
+            };
+			
+			var chart = new google.charts.Line(document.getElementById('google_chart_accel'));
+            chart.draw(data, options);
+			
+			google.visualization.events.addListener(chart, 'error', function (googleError) {
+			google.visualization.errors.removeError(googleError.id);
+			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
+			});
+        }
 		
         // Called when the client connects
         function onConnect() {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
 			client.subscribe("EmbSy/gruppe_15/#");  // Topics: test, temp, ax, ay, az
-			console.log("subscripe topic: EmbSby/gruppe_15/#");
-			message = new Paho.MQTT.Message("HelloWorld");
-			message.destinationName = "EmbSy/gruppe_15/test";
-			client.send(message);
-			console.log("test message sent to topic EmbSy/gruppe_15/test ");
-			
+			console.log("subscribe topic: EmbSby/gruppe_15/#");			
         }
 
 		
@@ -345,72 +389,115 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		
         // Called when a message arrives
         function onMessageArrived(message) {
-            console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
+            //console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
 			
 			// check Topics
 			switch(message.destinationName){
 			case "EmbSy/gruppe_15/temp":
 				add_temp(message.payloadString);
-				console.log("add_temp: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+			//	console.log("add_temp: topic=" + message.destinationName + ", temp=" + message.payloadString);
 				break;
 			case "EmbSy/gruppe_15/ax":
 				add_ax(message.payloadString);
-				console.log("add_ax: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+			//	console.log("add_ax: topic=" + message.destinationName + ", ax=" + message.payloadString);
 				break;
 			case "EmbSy/gruppe_15/ay":
 				add_ay(message.payloadString);
-				console.log("add_ay: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
+			//	console.log("add_ay: topic=" + message.destinationName + ", ay=" + message.payloadString);
 				break;
 			case "EmbSy/gruppe_15/az":
 				add_az(message.payloadString);
-				console.log("add_az: Message with topic=" + message.destinationName + ", message=" + message.payloadString);
-				brake
+			//	console.log("add_az: topic=" + message.destinationName + ", az=" + message.payloadString);
+				break;
 			default:
 			console.log("NO_ADD: Message with unknown topic=" + message.destinationName + ", message=" + message.payloadString);
 			}
 			
-		}	
+			for (i=0; i < maxLength; i++){
+				data_accel[i][1] = cA_ax[i];
+				data_accel[i][2] = cA_ay[i];
+				data_accel[i][3] = cA_az[i];
+				data_temp[i] = cA_temp[i];
+			}
+			//console.log("data_accel=" + data_accel);
+			//console.log("data_temp=" + data_temp);
 			
+			drawChart_temp();
+			drawChart_accel();
+	
+		}	
+		
+		
 		// Circular Array	
 		var add_temp = function(element){
-			if(circular_temp.length == maxLength){
-				circular_temp.pop();
+			if(cA_temp.length == maxLength){
+				cA_temp.pop();
 			}
-			circular_temp.unshift(element);
+			cA_temp.unshift(element);
+			for (i=0; i < maxLength; i++){
+				data_temp[i] = data_temp[i];
+			}
 		};
 			
 		var add_ax = function(element){
-			if(circular_ax.length == maxLength){
-				circular_ax.pop();
+			if(cA_ax.length == maxLength){
+				cA_ax.pop();
 			}
-			circular_ax.unshift(element);
+			cA_ax.unshift(element);
 		};
 
 		var add_ay = function(element){
-			if(circular_ay.length == maxLength){
-				circular_ay.pop();
+			if(cA_ay.length == maxLength){
+				cA_ay.pop();
 			}
-			circular_ay.unshift(element);
+			cA_ay.unshift(element);
 		};
 
 		var add_az = function(element){
-			if(circular_az.length == maxLength){
-				circular_az.pop();
+			if(cA_az.length == maxLength){
+				cA_az.pop();
 			}
-			circular_az.unshift(element);
+			cA_az.unshift(element);
 		};		
 			
 				
-		// Testmessage for testing communication to and from MQTT Broker
+		// Testmessage for testing communication to, and from the MQTT Broker
 		function testmessage() {
-			message = new Paho.MQTT.Message("HelloWorld Test");
-			message.destinationName = "EmbSy/gruppe_15/test";
-			client.send(message);
-			console.log("first test message sent to topic EmbSy/gruppe_15/test ");
-			message = new Paho.MQTT.Message("12");
+			message = new Paho.MQTT.Message('-15');
 			message.destinationName = "EmbSy/gruppe_15/temp";
 			client.send(message);
-			console.log("second test message sent to topic EmbSy/gruppe_15/temp ");
+		//	console.log("first test message sent to topic EmbSy/gruppe_15/temp");
+			
+			message = new Paho.MQTT.Message('12');
+			message.destinationName = "EmbSy/gruppe_15/temp";
+			client.send(message);
+		//	console.log("second test message sent to topic EmbSy/gruppe_15/temp");
+			
+			message = new Paho.MQTT.Message("100");
+			message.destinationName = "EmbSy/gruppe_15/ax";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("150");
+			message.destinationName = "EmbSy/gruppe_15/ax";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("200");
+			message.destinationName = "EmbSy/gruppe_15/ay";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("250");
+			message.destinationName = "EmbSy/gruppe_15/ay";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("300");
+			message.destinationName = "EmbSy/gruppe_15/az";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("350");
+			message.destinationName = "EmbSy/gruppe_15/az";
+			client.send(message);
+			
+		//	console.log("cA_temp =" + cA_temp + "cA_ax=" + cA_ax + "cA_ay=" + cA_ay + "cA_az=" + cA_az);			
 		}
 		
 		
@@ -418,7 +505,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
             if (!client) {
                 return;
             }
-            var message = new Paho.MQTT.Message("Hello");
+            var message = new Paho.MQTT.Message("First test message: Hello");
             message.destinationName = "EmbSy/gruppe_15/test";
             client.send(message);
         }
