@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include "ble_api.h"
 #include "json.h"
+#include "broker_api.h"
 
 static void *temperature_thread(void *pdata)
 {
@@ -15,12 +16,10 @@ static void *acceleration_thread(void *pdata)
 
 int main(void)
 {
-    //pthread_t th_temp, th_accel;
     connection_t conn;
 
-    // Create Threads
-    //pthread_create(&th_temp, NULL, temperature_thread, NULL);
-    //pthread_create(&th_accel, NULL, acceleration_thread, NULL);
+    // Broker
+    message_t message;
 
     // Init the connection object
     init_connect_obj(&conn);
@@ -49,12 +48,14 @@ int main(void)
 
     // Cleanup
     free_connect_obj(&conn);
+   
+    // Broker
+    message.payload = "2.5g";
+    message.topic = TOPIC_AX;
 
-    // Stop measure threads
-    /*pthread_cancel(th_temp);
-    pthread_join(th_temp, NULL);
-    pthread_cancel(th_accel);
-    pthread_join(th_accel, NULL);*/
+    startBroker();
+    sendMQTTmessage(&message);
+    disconectBroker();
 
     // Exit
     return(EXIT_SUCCESS);

@@ -18,33 +18,19 @@
 #define PASSWORD    "JfC65L05"
 #define PAYLOAD     "Hello World!"
 #define QOS         1
-#define TIMEOUT     10000L
-
-#define STRING_SIZE 1000
-
-MQTTAsync client;
-MQTTAsync_connectOptions conn_opts = MQTTAsync_connectOptions_initializer;
-MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
-MQTTAsync_responseOptions opts = MQTTAsync_responseOptions_initializer;
-MQTTAsync_token token;
+#define TIMEOUT     100L
 
 typedef struct message_s{
-    // Control Section
-    bool isConected;
-    bool finished;
-
-    char payload[STRING_SIZE];
-    char topic[STRING_SIZE];
-
+    char *payload;
+    char *topic;
 
 }message_t;
 
-message_t messageMQTT;
 
-volatile MQTTAsync_token deliveredtoken;
-
+void startBroker();
 void sendMQTTmessage(message_t *message);
-void conectToBroker();
+void waitForDelivering();
 void disconectBroker();
+
 
 #endif // BROKER_API_H
