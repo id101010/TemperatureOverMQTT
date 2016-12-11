@@ -47,8 +47,8 @@ int main(void)
     free_connect_obj(&conn);
 
     // Broker
-    message.payload = "Hello World!!!!";
-    message.topic = TOPIC;
+    message.payload = "2.5g";
+    message.topic = TOPIC_AX;
 
     startBroker();
     sendMQTTmessage(&message);

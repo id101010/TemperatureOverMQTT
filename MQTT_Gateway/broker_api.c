@@ -101,13 +101,13 @@ void sendMQTTmessage(message_t *message)
     response_opts.onSuccess = onSend;
     response_opts.context = client;
 
-    pubmsg.payload = PAYLOAD;
-    pubmsg.payloadlen = strlen(PAYLOAD);
+    pubmsg.payload = message->payload;
+    pubmsg.payloadlen = strlen(message->payload);
     pubmsg.qos =  QOS;
     pubmsg.retained = 0;
     deliveredtoken = 0;
 
-    if ((rc = MQTTAsync_sendMessage(client, TOPIC, &pubmsg, &response_opts)) != MQTTASYNC_SUCCESS)
+    if ((rc = MQTTAsync_sendMessage(client, message->payload, &pubmsg, &response_opts)) != MQTTASYNC_SUCCESS)
     {        
         printf("Failed to start sendMessage, return code %d\n", rc);
         fflush(stdout);
@@ -116,7 +116,7 @@ void sendMQTTmessage(message_t *message)
 
     printf("Waiting for publication of %s\n"
     "on topic %s for client with ClientID: %s\n",
-    PAYLOAD, TOPIC, CLIENTID);
+    message->payload, message->topic, CLIENTID);
     fflush(stdout);
     while (!finished_MQTT)
     {
