@@ -1,12 +1,14 @@
 #ifndef BROKER_API_H
 #define BROKER_API_H
 
+/*----- Header-Files ---------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <libs/libpaho/MQTTAsync.h>
 
+/*----- Defines            --------------------------------------------------*/
 #define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"
 #define CLIENTID    "BLESensor"
 #define TOPIC       "EmbSy/gruppe_15/test"
@@ -20,13 +22,14 @@
 #define QOS         1
 #define TIMEOUT     100L
 
+/*----- Data types -----------------------------------------------------------*/
 typedef struct message_s{
     char *payload;
     char *topic;
 
 }message_t;
 
-
+/*----- Function prototypes --------------------------------------------------*/
 void startBroker();
 void sendMQTTmessage(message_t *message);
 void waitForDelivering();

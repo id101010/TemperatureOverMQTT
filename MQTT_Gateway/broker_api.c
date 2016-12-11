@@ -1,5 +1,11 @@
+/*----- Header-Files ---------------------------------------------------------*/
 #include "broker_api.h"
 
+/*----- Data types -----------------------------------------------------------*/
+
+/*----- Function prototypes --------------------------------------------------*/
+
+/*----- Data -----------------------------------------------------------------*/
 int finished_MQTT = 0;
 int connected = 0;
 int rc;
@@ -11,6 +17,23 @@ MQTTAsync_disconnectOptions disconn_opts = MQTTAsync_disconnectOptions_initializ
 MQTTAsync_message pubmsg = MQTTAsync_message_initializer;
 MQTTAsync_responseOptions response_opts = MQTTAsync_responseOptions_initializer;
 
+/*----- Implementation -------------------------------------------------------*/
+
+/*******************************************************************************
+ *  function :    connlost
+ ******************************************************************************/
+/** @brief          function is executed when a connection is lost and trys to
+ *                  reconnect
+ *
+ *
+ *  @type           private
+ *
+ *  @param[in]      contex: contains any application-specific context
+ *                  cause: reason for disconnecting
+ *
+ *  @return       none
+ *
+ ******************************************************************************/
 void connlost(void *context, char *cause)
 {
 
@@ -30,7 +53,20 @@ void connlost(void *context, char *cause)
     }
 }
 
-
+/*******************************************************************************
+ *  function :    onDisconnect
+ ******************************************************************************/
+/** @brief          function is executed when Broker is succesfull disconnected
+ *
+ *
+ *  @type           private
+ *
+ *  @param[in]      contex: contains any application-specific context
+ *                  response: respons from MQTTAsync_disconnect();
+ *
+ *  @return       none
+ *
+ ******************************************************************************/
 void onDisconnect(void* context, MQTTAsync_successData* response)
 {
     printf("Successful disconnection\n");
@@ -40,7 +76,20 @@ void onDisconnect(void* context, MQTTAsync_successData* response)
 
 }
 
-
+/*******************************************************************************
+ *  function :    onSend
+ ******************************************************************************/
+/** @brief          function is executed when a message is send succesfull
+ *
+ *
+ *  @type           private
+ *
+ *  @param[in]      contex: contains any application-specific context
+ *                  response: respons from MQTTAsync_sendMessage();
+ *
+ *  @return       none
+ *
+ ******************************************************************************/
 void onSend(void* context, MQTTAsync_successData* response)
 {
     printf("Message with token value %d delivery confirmed\n", response->token);
@@ -48,7 +97,22 @@ void onSend(void* context, MQTTAsync_successData* response)
     finished_MQTT = 1;
 }
 
-
+/*******************************************************************************
+ *  function :    onConnectFailure
+ ******************************************************************************/
+/** @brief          function is executed when a sccesfull connection is
+ *                  established
+ *
+ *  @type           private
+ *
+ *  @param[in]      contex: A pointer to the context value originally passed
+ *                          to MQTTAsync_responseOptions, which contains any
+ *                          application-specific context
+ *                  response: respons from MQTTAsync_connect();
+ *
+ *  @return       none
+ *
+ ******************************************************************************/
 void onConnectFailure(void* context, MQTTAsync_failureData* response)
 {
     printf("Connect failed, rc %d\n", response ? response->code : 0);
@@ -57,6 +121,22 @@ void onConnectFailure(void* context, MQTTAsync_failureData* response)
     connected = 0;
 }
 
+/*******************************************************************************
+ *  function :    onConnect
+ ******************************************************************************/
+/** @brief          function is executed when a successfull connection is
+ *                  established
+ *
+ *  @type           private
+ *
+ *  @param[in]      contex: A pointer to the context value originally passed
+ *                          to MQTTAsync_responseOptions, which contains any
+ *                          application-specific context
+ *                  response: respons from MQTTAsync_connect();
+ *
+ *  @return       none
+ *
+ ******************************************************************************/
 void onConnect(void* context, MQTTAsync_successData* response)
 {
     printf("Successful connection\n");
@@ -64,6 +144,19 @@ void onConnect(void* context, MQTTAsync_successData* response)
     connected = 1;
 }
 
+/*******************************************************************************
+ *  function :    startBroker
+ ******************************************************************************/
+/** @brief          connect to broker
+ *
+ *
+ *  @type           global
+ *
+ *  @param[in]      none
+ *
+ *  @return         none
+ *
+ ******************************************************************************/
 void startBroker()
 {
     MQTTAsync_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
@@ -95,7 +188,19 @@ void startBroker()
         #endif
     }
 }
-
+/*******************************************************************************
+ *  function :    sendMQTTmesage
+ ******************************************************************************/
+/** @brief          send a message to broker
+ *
+ *
+ *  @type           global
+ *
+ *  @param[in]      struct message_t
+ *
+ *  @return        none
+ *
+ ******************************************************************************/
 void sendMQTTmessage(message_t *message)
 {
     response_opts.onSuccess = onSend;
@@ -123,7 +228,19 @@ void sendMQTTmessage(message_t *message)
         usleep(TIMEOUT);
     }
 }
-
+/*******************************************************************************
+ *  function :    disconectBroker
+ ******************************************************************************/
+/** @brief          disconnects the broker and kills the client
+ *
+ *
+ *  @type           global
+ *
+ *  @param[in]      none
+ *
+ *  @return         none
+ *
+ ******************************************************************************/
 void disconectBroker()
 {
     disconn_opts.onSuccess = onDisconnect;
