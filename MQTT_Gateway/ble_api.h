@@ -31,9 +31,11 @@
 #define STRING_SIZE         1000
 #define SOCKET_PATH         "/tmp/sensor-hub.socket"
 #define SENSOR_MAC          "CC:85:C8:56:E5:DD"
-#define RECV_MSG            1
-#define DBG_MSG             2
-#define SENT_MSG            3
+
+#define MSG_RECV            1
+#define MSG_DBG             2
+#define MSG_SENT            3
+#define MSG_EVNT            4
 
 /*----- Data types -----------------------------------------------------------*/
 typedef struct connection_s {

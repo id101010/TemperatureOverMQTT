@@ -35,7 +35,14 @@ static void *threaded_listener(void *pdata);
  ******************************************************************************/
 void event_parser(json_t *jmsg)
 {
+    char *pcValue;
 
+    pcValue = json_getStringValue(jmsg, "event");
+
+    if(pcValue != NULL){
+        debug(MSG_EVNT, pcValue);
+        json_freeString(pcValue);
+    }
 }
 
 /*******************************************************************************
@@ -64,7 +71,17 @@ static void *threaded_listener(void *pdata)
         for(i = 0; i < strlength; i++) {
             if(tmp[i]=='\n') { //end of one message
                 tmp[i] = '\0'; //terminate message here
-                debug(RECV_MSG, &tmp[laststart]);
+                debug(MSG_RECV, &tmp[laststart]);
+
+                // parse json msg
+                json_t *jmsg = json_createFromString(&tmp[laststart]);
+                if(jmsg != NULL){
+                    // call event parser
+                    event_parser(jmsg);
+                    // cleanup
+                    json_cleanup(jmsg);
+                }
+
                 laststart=i+1;
             }
         }

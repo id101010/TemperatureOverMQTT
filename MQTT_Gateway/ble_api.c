@@ -32,14 +32,16 @@ void debug(int type, const char *msg)
 {
 #ifdef DEBUG
     switch(type){
-        case RECV_MSG:
+        case MSG_RECV:
             printf("[RECIEVED]: \n%s\n", msg);
             break;
-        case DBG_MSG:
+        case MSG_DBG:
             printf("[DEBUG]: %s\n", msg);
             break;
-        case SENT_MSG:
+        case MSG_SENT:
             printf("[SENT]: \n%s\n", msg);
+        case MSG_EVNT:
+            printf("[EVENT]: %s\n", msg);
             break;
         default:
             printf("%s\n", msg);
@@ -107,17 +109,17 @@ void socket_get_connection(connection_t *conn)
 {
     // Get a socket filedescriptor
     conn->socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
-    debug(DBG_MSG, "Socket created.");
+    debug(MSG_DBG, "Socket created.");
 
     // Set socket adress
     conn->socket_addr.sun_family = AF_UNIX;
     strcpy(conn->socket_addr.sun_path, SOCKET_PATH);
     conn->addr_len = strlen(conn->socket_addr.sun_path) + sizeof(conn->socket_addr.sun_family);
-    debug(DBG_MSG, "Socket adress set.");
+    debug(MSG_DBG, "Socket adress set.");
 
     // Connect to socket
     connect(conn->socket_fd, (struct sockaddr *)&(conn->socket_addr), (conn->addr_len));
-    debug(DBG_MSG, "Socket connected.");
+    debug(MSG_DBG, "Socket connected.");
 }
 
 /*******************************************************************************
@@ -140,7 +142,7 @@ void send_command(connection_t *conn, json_t *jsonMsg)
     // copy json object in stringbuffer
     strcpy(tmp, json_getString(jsonMsg));
     // debug output
-    debug(SENT_MSG, json_getString(jsonMsg));
+    debug(MSG_SENT, json_getString(jsonMsg));
     // send command
     send(conn->socket_fd, tmp, STRING_SIZE, 0);
 }
@@ -168,7 +170,7 @@ bool recieve_answer(connection_t *conn, char *output)
 
     // Set socket timeout to 30s using a posix timer
     if (setsockopt (conn->socket_fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0){
-        debug(DBG_MSG, "Socket option SO_RCVTIMEO failed.");
+        debug(MSG_DBG, "Socket option SO_RCVTIMEO failed.");
         return 0;
     }
 
@@ -177,7 +179,7 @@ bool recieve_answer(connection_t *conn, char *output)
 
     // Ckeck for timeout
     if(length < 0){
-         debug(DBG_MSG, "Socket recv timeout reached.");
+         debug(MSG_DBG, "Socket recv timeout reached.");
          return false;
     }
 
@@ -276,7 +278,7 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
     conn->is_connected = true;
     sensor_disconnect(conn, sensor_mac);
     conn->is_connected = false;
-    debug(DBG_MSG, "Force disconnected!");
+    debug(MSG_DBG, "Force disconnected!");
 }
 
 /*******************************************************************************
