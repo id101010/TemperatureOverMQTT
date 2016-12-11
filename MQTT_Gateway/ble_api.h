@@ -63,7 +63,7 @@ void free_connect_obj(connection_t *conn);
 void socket_get_connection(connection_t *conn);
 
 void send_command(connection_t *conn, json_t *jsonMsg);
-json_t *recieve_answer(connection_t *conn);
+void recieve_answer(connection_t *conn);
 
 bool sensor_connect(connection_t *conn, char *sensor_mac);
 bool sensor_disconnect(connection_t *conn, char *sensor_mac);

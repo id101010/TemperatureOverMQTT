@@ -145,7 +145,7 @@ void send_command(connection_t *conn, json_t *jsonMsg)
  *  @return       none
  *
  ******************************************************************************/
-json_t *recieve_answer(connection_t *conn)
+void recieve_answer(connection_t *conn)
 {
     int length = 0;
     struct timeval timeout;
@@ -168,7 +168,6 @@ json_t *recieve_answer(connection_t *conn)
     }
 
     conn->answer[length] = '\0'; // Append nullterminator
-    return json_createFromString(conn->answer);
 }
 
 /*******************************************************************************
@@ -206,9 +205,10 @@ bool sensor_connect(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsg);
 
     // recieve the answer
-    json_t *json_answer = recieve_answer(conn);
+    recieve_answer(conn);
 
     // get the value to the key "event"
+    json_t *json_answer = json_createFromString(conn->answer);
     pcValue = json_getStringValue(json_answer, "event");
 
     // If device is connected
@@ -218,9 +218,9 @@ bool sensor_connect(connection_t *conn, char *sensor_mac)
     }
 
     // Don ’t forget to free Json objects !
+    json_cleanup(json_answer);
     json_freeString(pcValue);
     json_cleanup (jsonMsg);
-    json_cleanup(json_answer);
 
     return conn->is_connected;
 }
@@ -260,9 +260,10 @@ bool sensor_disconnect(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsg);
 
     // recieve the answer
-    json_t *json_answer = recieve_answer(conn);
+    recieve_answer(conn);
 
     // get the value to the key "event"
+    json_t *json_answer = json_createFromString(conn->answer);
     pcValue = json_getStringValue(json_answer, "event");
 
     // If device is connected
@@ -272,7 +273,8 @@ bool sensor_disconnect(connection_t *conn, char *sensor_mac)
     }
 
     // Don ’t forget to free Json objects !
-    //json_freeString(pcValue);
+    json_cleanup(json_answer);
+    json_freeString(pcValue);
     json_cleanup(jsonMsg);
 
     // return true if disconnected
@@ -446,9 +448,8 @@ void sensor_get_ble_scan(connection_t *conn)
     sleep(5);
 
     // Recieve Answer
-    json_t *json_answer = recieve_answer(conn);
+    recieve_answer(conn);
     debug(conn->answer); // debug print
-    json_cleanup(json_answer);
 
     // Don ’t forget to free Json object !
     json_cleanup (jsonMsg);
@@ -490,7 +491,8 @@ void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgTemperature);
 
     // recieve answer
-    json_t *json_answer_temperature = recieve_answer(conn);
+    recieve_answer(conn);
+    json_t *json_answer_temperature = json_createFromBuffer(conn->answer,STRING_SIZE-1);
     debug(json_getString(json_answer_temperature)); // debug print
 
     // get the value to the key "event"
