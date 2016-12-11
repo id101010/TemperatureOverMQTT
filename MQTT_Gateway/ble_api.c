@@ -1,5 +1,6 @@
 /*----- Header-Files ---------------------------------------------------------*/
 #include <sys/time.h>
+#include <pthread.h>
 #include "ble_api.h"
 #include "json.h"
 
@@ -27,10 +28,23 @@
  *  @return       none
  *
  ******************************************************************************/
-void debug(const char *msg)
+void debug(int type, const char *msg)
 {
 #ifdef DEBUG
-    printf("[DEBUG]: %s\n", msg);
+    switch(type){
+        case RECV_MSG:
+            printf("[RECIEVED]: \n%s\n", msg);
+            break;
+        case DBG_MSG:
+            printf("[DEBUG]: %s\n", msg);
+            break;
+        case SENT_MSG:
+            printf("[SENT]: \n%s\n", msg);
+            break;
+        default:
+            printf("%s\n", msg);
+        break;
+    }
     fflush(stdout);
 #endif
 }
@@ -93,17 +107,17 @@ void socket_get_connection(connection_t *conn)
 {
     // Get a socket filedescriptor
     conn->socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
-    debug("Socket created.");
+    debug(DBG_MSG, "Socket created.");
 
     // Set socket adress
     conn->socket_addr.sun_family = AF_UNIX;
     strcpy(conn->socket_addr.sun_path, SOCKET_PATH);
     conn->addr_len = strlen(conn->socket_addr.sun_path) + sizeof(conn->socket_addr.sun_family);
-    debug("Socket adress set.");
+    debug(DBG_MSG, "Socket adress set.");
 
     // Connect to socket
     connect(conn->socket_fd, (struct sockaddr *)&(conn->socket_addr), (conn->addr_len));
-    debug("Socket connected.");
+    debug(DBG_MSG, "Socket connected.");
 }
 
 /*******************************************************************************
@@ -126,7 +140,7 @@ void send_command(connection_t *conn, json_t *jsonMsg)
     // copy json object in stringbuffer
     strcpy(tmp, json_getString(jsonMsg));
     // debug output
-    debug(json_getString(jsonMsg));
+    debug(SENT_MSG, json_getString(jsonMsg));
     // send command
     send(conn->socket_fd, tmp, STRING_SIZE, 0);
 }
@@ -154,7 +168,7 @@ bool recieve_answer(connection_t *conn, char *output)
 
     // Set socket timeout to 30s using a posix timer
     if (setsockopt (conn->socket_fd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0){
-        debug("Socket option SO_RCVTIMEO failed.");
+        debug(DBG_MSG, "Socket option SO_RCVTIMEO failed.");
         return 0;
     }
 
@@ -163,7 +177,7 @@ bool recieve_answer(connection_t *conn, char *output)
 
     // Ckeck for timeout
     if(length < 0){
-         debug("Socket recv timeout reached.");
+         debug(DBG_MSG, "Socket recv timeout reached.");
          return false;
     }
 
@@ -185,14 +199,11 @@ bool recieve_answer(connection_t *conn, char *output)
  *  @return       none
  *
  ******************************************************************************/
-bool sensor_connect(connection_t *conn, char *sensor_mac)
+void sensor_connect(connection_t *conn, char *sensor_mac)
 {
-    char *pcValue = NULL;
-    char tmp[STRING_SIZE];
-
     // If already connected return
     if(conn->is_connected){
-        return false;
+        return;
     }
 
     // create an empty json object
@@ -208,27 +219,8 @@ bool sensor_connect(connection_t *conn, char *sensor_mac)
     // send the crafted command as string
     send_command(conn, jsonMsg);
 
-    // recieve the answer
-    if(recieve_answer(conn, tmp)){
-        // get the value to the key "event"
-        json_t *json_answer = json_createFromString(conn->answer);
-        pcValue = json_getStringValue(json_answer, "event");
-        // If device is connected
-        if(strcmp(pcValue, "DeviceConnected") == 0){
-            debug("Sensor Connect: Successful!");
-            // set the connected flag
-            conn->is_connected = true;
-        }
-
-        // free objects
-        json_cleanup(json_answer);
-        json_freeString(pcValue);
-    }else{
-        debug("Sensor Connect: No answer!");
-    }
+    // free ressources
     json_cleanup (jsonMsg);
-
-    return conn->is_connected;
 }
 
 /*******************************************************************************
@@ -243,14 +235,11 @@ bool sensor_connect(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-bool sensor_disconnect(connection_t *conn, char *sensor_mac)
+void sensor_disconnect(connection_t *conn, char *sensor_mac)
 {
-    char *pcValue = NULL;
-    char tmp[STRING_SIZE];
-
     // If not connected return
     if(!conn->is_connected){
-        return false;
+        return;
     }
 
     // create an empty json object
@@ -266,30 +255,8 @@ bool sensor_disconnect(connection_t *conn, char *sensor_mac)
     // send the crafted command as string
     send_command(conn, jsonMsg);
 
-    // recieve the answer
-    if(recieve_answer(conn,tmp)){
-        // get the value to the key "event"
-        json_t *json_answer = json_createFromString(conn->answer);
-        pcValue = json_getStringValue(json_answer, "event");
-        // If device is connected
-        if(strcmp(pcValue, "DeviceDisconnected") == 0){
-            debug("Sensor Disconnect: Successful!");
-            // set the connected flag
-            conn->is_connected = false;
-        }
-
-        // free objects
-        json_cleanup(json_answer);
-        json_freeString(pcValue);
-    }else{
-        debug("Sensor Connect: No answer!");
-    }
-
+    // free ressources
     json_cleanup(jsonMsg);
-
-    // return true if disconnected
-    return !conn->is_connected;
-
 }
 
 /*******************************************************************************
@@ -309,6 +276,7 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
     conn->is_connected = true;
     sensor_disconnect(conn, sensor_mac);
     conn->is_connected = false;
+    debug(DBG_MSG, "Force disconnected!");
 }
 
 /*******************************************************************************
@@ -323,16 +291,11 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-bool sensor_configure_gyro(connection_t *conn, char *sensor_mac)
+void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
 {
-    char *pcValue = NULL;
-    char tmp[STRING_SIZE];
-
-    bool out = false;
-
     // If not connected return
     if(!(conn->is_connected)){
-        return false;
+        return;
     }
 
     // Create an empty json object
@@ -350,31 +313,13 @@ bool sensor_configure_gyro(connection_t *conn, char *sensor_mac)
         json_setKeyValue(jsonMsgGyroConfig, "command", "ConfigGyro");
         json_insertNestedObj(jsonMsgGyroConfig, "data", jsonSubMsgGyroConfig);
     }
+
     // Send Gyroconfig
     send_command(conn, jsonMsgGyroConfig);
-
-    // recieve the answer
-    if(recieve_answer(conn, tmp)){
-        // get the value to the key "event"
-        json_t *json_answer = json_createFromString(tmp);
-        pcValue = json_getStringValue(json_answer, "event");
-        // If device is connected
-        if(strcmp(pcValue, "GyroConfigured") == 0){
-            debug("Gyro successfully configured!");
-            out = true;
-        }
-        // free objects
-        json_cleanup(json_answer);
-        json_freeString(pcValue);
-    }else{
-        debug("GyroConfig: No answer!");
-    }
 
     // Free ressources
     json_cleanup(jsonSubMsgGyroConfig);
     json_cleanup(jsonMsgGyroConfig);
-
-    return out;
 }
 
 /*******************************************************************************
@@ -389,22 +334,18 @@ bool sensor_configure_gyro(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-bool sensor_configure_temp(connection_t *conn, char *sensor_mac)
+void sensor_configure_temp(connection_t *conn, char *sensor_mac)
 {
-    char *pcValue = NULL;
-    char tmp[STRING_SIZE];
-    bool out = false;
-
     // If not connected return
     if(!conn->is_connected){
-        return false;
+        return;
     }
 
     // Create an empty json object
     json_t *jsonMsgTempStart = json_createEmpty();
     json_t *jsonSubMsgTempStart = json_createEmpty();
 
-    // ---- Temperature sampler config
+    // Assemble temperature config
     if (jsonMsgTempStart != NULL && jsonSubMsgTempStart != NULL) {
         // prepare nested object
         json_setKeyValue(jsonSubMsgTempStart, "on", "true");
@@ -414,31 +355,13 @@ bool sensor_configure_temp(connection_t *conn, char *sensor_mac)
         json_setKeyValue(jsonMsgTempStart, "command", "ConfigTemp");
         json_insertNestedObj(jsonMsgTempStart, "data", jsonSubMsgTempStart);
     }
-    // Send Gyroconfig
-    send_command(conn, jsonMsgTempStart);
 
-    // recieve the answer
-    if(recieve_answer(conn, tmp)){
-        // get the value to the key "event"
-        json_t *json_answer = json_createFromString(tmp);
-        pcValue = json_getStringValue(json_answer, "event");
-        // If device is connected
-        if(strcmp(pcValue, "TempConfigured") == 0){
-            debug("Temperature sensor successfully configured!");
-            out = true;
-        }
-        // free objects
-        json_cleanup(json_answer);
-        json_freeString(pcValue);
-    }else{
-        debug("TempConfig: No answer!");
-    }
+    // Send config
+    send_command(conn, jsonMsgTempStart);
 
     // Free ressources
     json_cleanup(jsonSubMsgTempStart);
     json_cleanup(jsonMsgTempStart);
-
-    return out;
 }
 
 /*******************************************************************************
@@ -453,15 +376,11 @@ bool sensor_configure_temp(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-bool sensor_configure_accel(connection_t *conn, char *sensor_mac)
+void sensor_configure_accel(connection_t *conn, char *sensor_mac)
 {
-    char *pcValue = NULL;
-    char tmp[STRING_SIZE];
-    bool out = false;
-
     // If not connected return
     if(!conn->is_connected){
-        return false;
+        return;
     }
 
     // Create an empty json object
@@ -482,28 +401,9 @@ bool sensor_configure_accel(connection_t *conn, char *sensor_mac)
     // Send config
     send_command(conn, jsonMsgAccelStart);
 
-    // recieve the answer
-    if(recieve_answer(conn, tmp)){
-        // get the value to the key "event"
-        json_t *json_answer = json_createFromString(tmp);
-        pcValue = json_getStringValue(json_answer, "event");
-        // If device is connected
-        if(strcmp(pcValue, "AccelConfigured") == 0){
-            debug("Accel sensor successfully configured!");
-            out = true;
-        }
-        // free objects
-        json_cleanup(json_answer);
-        json_freeString(pcValue);
-    }else{
-        debug("AccelConfig: No answer!");
-    }
-
     // Free ressources
     json_cleanup(jsonSubMsgAccelStart);
     json_cleanup(jsonMsgAccelStart);
-
-    return out;
 }
 
 /*******************************************************************************
@@ -520,20 +420,18 @@ bool sensor_configure_accel(connection_t *conn, char *sensor_mac)
  ******************************************************************************/
 void sensor_get_ble_scan(connection_t *conn)
 {
-    char tmp[STRING_SIZE];
-
     // create an empty json object
     json_t *jsonMsgStart = json_createEmpty();
     json_t *jsonMsgStop = json_createEmpty();
 
-    // create start message
+    // assemble start message
     if ( jsonMsgStart != NULL ) {
         // Add a key - value pair
         json_setKeyValue(jsonMsgStart, "device", "");
         json_setKeyValue(jsonMsgStart, "command", "StartBleScan");
     }
 
-    // create stop message
+    // assemble stop message
     if ( jsonMsgStop != NULL ) {
         // Add a key - value pair
         json_setKeyValue(jsonMsgStop, "device", "");
@@ -543,14 +441,8 @@ void sensor_get_ble_scan(connection_t *conn)
     // Start the BLE scan
     send_command(conn, jsonMsgStart);
 
-    sleep(2);
-
-    // Recieve Answer
-    if(recieve_answer(conn, tmp)){
-         debug(tmp);
-    }else{
-         debug("BLE Scan, no answer!");
-    }
+    // Scan for 5 seconds
+    sleep(5);
 
     // Stop the BLE scan
     send_command(conn, jsonMsgStop);
@@ -575,8 +467,6 @@ void sensor_get_ble_scan(connection_t *conn)
  ******************************************************************************/
 void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
 {
-    char tmp[STRING_SIZE];
-    char *pcValue = NULL;
     json_t *jsonMsgTemperature = json_createEmpty();
 
     // If there is no connection abort
@@ -587,33 +477,18 @@ void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
     // configure the gyroscope
     sensor_configure_gyro(conn, SENSOR_MAC);
 
-    // ---- Temperature
+    // Assemble temperature request
     if (jsonMsgTemperature != NULL) {
         // prepare json object
         json_setKeyValue(jsonMsgTemperature, "device", sensor_mac);
         json_setKeyValue(jsonMsgTemperature, "command", "GetTemperature");
     }
+
     // send temperature request
     send_command(conn, jsonMsgTemperature);
 
-    // recieve answer
-    recieve_answer(conn, tmp);
-    json_t *json_answer_temperature = json_createFromBuffer(tmp,STRING_SIZE-1);
-    debug(json_getString(json_answer_temperature)); // debug print
-
-    // get the value to the key "event"
-    pcValue = json_getStringValue(json_answer_temperature, "data");
-    debug(pcValue);
-
-    // If device is connected
-    if(pcValue != NULL){
-        debug(pcValue);
-    }
-
-    // Don ’t forget to free Json objects !
+    // free ressources
     json_cleanup(jsonMsgTemperature);
-    //json_cleanup(json_answer_configured);
-    json_cleanup(json_answer_temperature);
 }
 
 /*******************************************************************************
@@ -631,9 +506,6 @@ void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
  ******************************************************************************/
 void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
 {
-    char tmp[STRING_SIZE];
-    int i = 0;
-
     // If there is no connection abort
     if(!conn->is_connected){
         return;
@@ -662,13 +534,8 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
     // start sampling
     send_command(conn, jsonMsgTemperatureStart);
 
-
-    // read 50 values
-    for(i = 0; i < 50; i++){
-        sleep(1);
-        recieve_answer(conn,tmp);
-        debug(tmp);
-    }
+    // wait 20s
+    sleep(20);
 
     // stop sampling
     send_command(conn, jsonMsgTemperatureStop);

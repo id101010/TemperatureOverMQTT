@@ -31,6 +31,9 @@
 #define STRING_SIZE         1000
 #define SOCKET_PATH         "/tmp/sensor-hub.socket"
 #define SENSOR_MAC          "CC:85:C8:56:E5:DD"
+#define RECV_MSG            1
+#define DBG_MSG             2
+#define SENT_MSG            3
 
 /*----- Data types -----------------------------------------------------------*/
 typedef struct connection_s {
@@ -50,7 +53,7 @@ typedef struct connection_s {
 } connection_t;
 
 /*----- Function prototypes --------------------------------------------------*/
-void debug(const char *msg);
+void debug(int type, const char *msg);
 void init_connect_obj(connection_t *conn);
 void free_connect_obj(connection_t *conn);
 void socket_get_connection(connection_t *conn);
@@ -58,8 +61,8 @@ void socket_get_connection(connection_t *conn);
 void send_command(connection_t *conn, json_t *jsonMsg);
 bool recieve_answer(connection_t *conn, char *output);
 
-bool sensor_connect(connection_t *conn, char *sensor_mac);
-bool sensor_disconnect(connection_t *conn, char *sensor_mac);
+void sensor_connect(connection_t *conn, char *sensor_mac);
+void sensor_disconnect(connection_t *conn, char *sensor_mac);
 void sensor_force_disconnect(connection_t *conn, char *sensor_mac);
 
 void sensor_get_ble_scan(connection_t *conn);
