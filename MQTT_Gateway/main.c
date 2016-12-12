@@ -27,11 +27,15 @@ static void *threaded_listener(void *pdata);
  ******************************************************************************/
 void on_temperature_data_recieved(void)
 {
+    char dummy_temp[10] = "";
+    message_t tempMessage;
+
     debug(MSG_DBG, "Temperaure Data recieved.");
 
-    /*
-     * TODO: Send Data to Broker
-     */
+    tempMessage.payload = dummy_temp;
+    tempMessage.topic = TOPIC_TEMP;
+
+    sendMQTTmessage(&tempMessage);
 }
 
 /*******************************************************************************
@@ -39,10 +43,24 @@ void on_temperature_data_recieved(void)
  ******************************************************************************/
 void on_accel_data_recieved(void)
 {
+    char dummy_ax[10] = "";
+    char dummy_ay[10] = "";
+    char dummy_az[10] = "";
+    message_t tempMessage;
+
     debug(MSG_DBG, "Acceleration Data recieved.");
-    /*
-     * TODO: Send Data to Broker
-     */
+
+    tempMessage.payload = dummy_ax;
+    tempMessage.topic = TOPIC_AX;
+    sendMQTTmessage(&tempMessage);
+
+    tempMessage.payload = dummy_ay;
+    tempMessage.topic = TOPIC_AY;
+    sendMQTTmessage(&tempMessage);
+
+    tempMessage.payload = dummy_az;
+    tempMessage.topic = TOPIC_AZ;
+    sendMQTTmessage(&tempMessage);
 }
 
 /*******************************************************************************
@@ -50,10 +68,24 @@ void on_accel_data_recieved(void)
  ******************************************************************************/
 void on_gyro_data_recieved(void)
 {
+    char dummy_gx[10] = "";
+    char dummy_gy[10] = "";
+    char dummy_gz[10] = "";
+    message_t tempMessage;
+
     debug(MSG_DBG, "Gyroscope Data recieved.");
-    /*
-     * TODO: Send Data to Broker
-     */
+
+    tempMessage.payload = dummy_gx;
+    tempMessage.topic = TOPIC_GX;
+    sendMQTTmessage(&tempMessage);
+
+    tempMessage.payload = dummy_gy;
+    tempMessage.topic = TOPIC_GY;
+    sendMQTTmessage(&tempMessage);
+
+    tempMessage.payload = dummy_gz;
+    tempMessage.topic = TOPIC_GZ;
+    sendMQTTmessage(&tempMessage);
 }
 
 /*******************************************************************************
@@ -187,6 +219,9 @@ static void *threaded_listener(void *pdata)
  ******************************************************************************/
 int main(int argc, char **argv)
 {
+    // Connecting to Broker
+    startBroker();
+
     // Init the connection object and connect to sensor-hub socket
     init_connect_obj(&conn);
     socket_get_connection(&conn);
@@ -214,7 +249,7 @@ int main(int argc, char **argv)
     pthread_mutex_destroy(lock_recv);
     pthread_mutex_destroy(conn.lock_send);
     free_connect_obj(&conn);
-   
+    disconectBroker();
     // Exit
     return(EXIT_SUCCESS);
 }

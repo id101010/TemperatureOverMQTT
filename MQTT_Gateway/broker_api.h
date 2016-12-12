@@ -16,6 +16,9 @@
 #define TOPIC_AX    "EmbSy/gruppe_15/ax"
 #define TOPIC_AY    "EmbSy/gruppe_15/ay"
 #define TOPIC_AZ    "EmbSy/gruppe_15/az"
+#define TOPIC_GX    "EmbSy/gruppe_15/gx"
+#define TOPIC_GY    "EmbSy/gruppe_15/gy"
+#define TOPIC_GZ    "EmbSy/gruppe_15/gz"
 #define USERNAME    "gruppe_15"
 #define PASSWORD    "JfC65L05"
 #define PAYLOAD     "Hello World!"
@@ -32,7 +35,6 @@ typedef struct message_s{
 /*----- Function prototypes --------------------------------------------------*/
 void startBroker();
 void sendMQTTmessage(message_t *message);
-void waitForDelivering();
 void disconectBroker();
 
 
