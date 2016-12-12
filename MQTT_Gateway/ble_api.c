@@ -130,7 +130,7 @@ void socket_get_connection(connection_t *conn)
 /** @brief        Uses a initialized connection_t object to send a json string
  *                over its socket.
  *
- *  @type         internal
+ *  @type         global
  *
  *  @param[in]    conn     connection_t object
  *  @param[in]    jsonMsg  command string in json format
@@ -297,7 +297,7 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
  ******************************************************************************/
 /** @brief        Configures the gyroscope
  *
- *  @type         global
+ *  @type         internal
  *
  *  @param[in]    conn          connection_t object
  *  @param[in]    sensor_mac    the mac adress of the sensor
@@ -305,7 +305,7 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
+static void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
 {
     // If not connected return
     if(!(conn->is_connected)){
@@ -341,7 +341,7 @@ void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
  ******************************************************************************/
 /** @brief        Configures the temperature sampler
  *
- *  @type         global
+ *  @type         internal
  *
  *  @param[in]    conn          connection_t object
  *  @param[in]    sensor_mac    the mac adress of the sensor
@@ -349,7 +349,7 @@ void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-void sensor_configure_temp(connection_t *conn, char *sensor_mac)
+static void sensor_configure_temp(connection_t *conn, char *sensor_mac)
 {
     // If not connected return
     if(!conn->is_connected){
@@ -384,7 +384,7 @@ void sensor_configure_temp(connection_t *conn, char *sensor_mac)
  ******************************************************************************/
 /** @brief        Configures the acceleration sampler
  *
- *  @type         global
+ *  @type         internal
  *
  *  @param[in]    conn          connection_t object
  *  @param[in]    sensor_mac    the mac adress of the sensor
@@ -392,7 +392,7 @@ void sensor_configure_temp(connection_t *conn, char *sensor_mac)
  *  @return       none
  *
  ******************************************************************************/
-void sensor_configure_accel(connection_t *conn, char *sensor_mac)
+static void sensor_configure_accel(connection_t *conn, char *sensor_mac)
 {
     // If not connected return
     if(!conn->is_connected){

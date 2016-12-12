@@ -56,21 +56,28 @@ typedef struct connection_s {
 } connection_t;
 
 /*----- Function prototypes --------------------------------------------------*/
+// Misc helper functions
 void debug(int type, const char *msg);
 void init_connect_obj(connection_t *conn);
 void free_connect_obj(connection_t *conn);
 void socket_get_connection(connection_t *conn);
 
+// Atomic functions
 void send_command(connection_t *conn, json_t *jsonMsg);
-bool recieve_answer(connection_t *conn, char *output);
+bool recieve_answer(connection_t *conn, char *output); /* DEBUG ONLY! */
 
+// Sensor Control functions
 void sensor_connect(connection_t *conn, char *sensor_mac);
 void sensor_disconnect(connection_t *conn, char *sensor_mac);
 void sensor_force_disconnect(connection_t *conn, char *sensor_mac);
 
+// Single measurements
 void sensor_get_ble_scan(connection_t *conn);
 void sensor_get_single_temperature(connection_t *conn, char *sensor_mac);
 
-/*----- Data -----------------------------------------------------------------*/
+// Data samplers
+void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac);
+void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac);
+void sensor_start_gyroscope_sampler(connection_t *conn, char *sensor_mac);
 
 #endif // BLE_API_H
