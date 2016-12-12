@@ -23,6 +23,7 @@
  *
  *  @type         global
  *
+ *  @param[in]    type    Type definition, specifies the output tag
  *  @param[in]    msg     Text string
  *
  *  @return       none
@@ -50,6 +51,7 @@ void debug(int type, const char *msg)
     fflush(stdout);
 #endif
 }
+
 
 /*******************************************************************************
  *  function :    init_connect_obj
@@ -128,10 +130,10 @@ void socket_get_connection(connection_t *conn)
 /** @brief        Uses a initialized connection_t object to send a json string
  *                over its socket.
  *
- *  @type         global
+ *  @type         internal
  *
  *  @param[in]    conn     connection_t object
- *  @param[in]    command  Command string in json format
+ *  @param[in]    jsonMsg  command string in json format
  *
  *  @return       none
  *
@@ -144,26 +146,29 @@ void send_command(connection_t *conn, json_t *jsonMsg)
     // debug output
     debug(MSG_SENT, json_getString(jsonMsg));
     // send command
-    pthread_mutex_lock(conn->lock_send);
+    pthread_mutex_lock(conn->lock_send);    // lock the thread
     send(conn->socket_fd, tmp, STRING_SIZE, 0);
-    pthread_mutex_unlock(conn->lock_send);
+    pthread_mutex_unlock(conn->lock_send);  // unlock the thread
 }
 
 /*******************************************************************************
  *  function :    recieve_answer
  ******************************************************************************/
 /** @brief        Recieves an answer from the ble sensor and creates a json object
+ *                >>>> DEPRICATED! JUST FOR DEBUG PURPOSE! <<<<
  *
  *  @type         global
  *
  *  @param[in]    conn     connection_t object
- *  @param[out]   jstring  json string object
+ *  @param[out]   output   json string object
  *
  *  @return       none
  *
  ******************************************************************************/
 bool recieve_answer(connection_t *conn, char *output)
 {
+    /* THIS FUNCTION IS DEPRICATED */
+
     char tmp[STRING_SIZE];
     int length = 0;
     struct timeval timeout;
@@ -198,7 +203,8 @@ bool recieve_answer(connection_t *conn, char *output)
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor to connect to
  *
  *  @return       none
  *
@@ -234,7 +240,8 @@ void sensor_connect(connection_t *conn, char *sensor_mac)
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor to disconnect from
  *
  *  @return       none
  *
@@ -266,11 +273,13 @@ void sensor_disconnect(connection_t *conn, char *sensor_mac)
 /*******************************************************************************
  *  function :    sensor_disconnect
  ******************************************************************************/
-/** @brief        Forces the sensorhub to send a disconnect package
+/** @brief        Forces the sensorhub to send a disconnect package in case something
+ *                went horribly wrong and the sensor thinks he's still connected ;)
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor to disconnect from
  *
  *  @return       none
  *
@@ -290,7 +299,8 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
  *
@@ -329,11 +339,12 @@ void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
 /*******************************************************************************
  *  function :    sensor_configure_temp
  ******************************************************************************/
-/** @brief        Configures the gyroscope
+/** @brief        Configures the temperature sampler
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
  *
@@ -371,11 +382,12 @@ void sensor_configure_temp(connection_t *conn, char *sensor_mac)
 /*******************************************************************************
  *  function :    sensor_configure_accel
  ******************************************************************************/
-/** @brief        Configures the gyroscope
+/** @brief        Configures the acceleration sampler
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
  *
@@ -413,7 +425,7 @@ void sensor_configure_accel(connection_t *conn, char *sensor_mac)
 /*******************************************************************************
  *  function :    sensor_ble_scan
  ******************************************************************************/
-/** @brief        Issues a BLE scan and recieves the answer from the sensor-hub
+/** @brief        Issues a BLE scan for 5 seconds
  *
  *  @type         global
  *
@@ -457,14 +469,14 @@ void sensor_get_ble_scan(connection_t *conn)
 }
 
 /*******************************************************************************
- *  function :    sensor_get_temperature
+ *  function :    sensor_get_single_temperature
  ******************************************************************************/
-/** @brief        Connects to a ble sensor, enables it's gyroscope and issues
- *                a temperature query.
+/** @brief        Configures the gyro and issues a single temperature measurement
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
  *
@@ -478,7 +490,7 @@ void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    // configure the gyroscope
+    // configure the gyroscope (needed for a single temperature measurement...)
     sensor_configure_gyro(conn, SENSOR_MAC);
 
     // Assemble temperature request
@@ -498,12 +510,13 @@ void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
 /*******************************************************************************
  *  function :    sensor_start_temperature_sampler
  ******************************************************************************/
-/** @brief        Connects to a ble sensor, enables it's gyroscope and issues
- *                a temperature query.
+/** @brief        Configures the gyro and the temperature sampler and issues
+ *                a continous temperature measurement over 20s
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
  *
@@ -515,7 +528,7 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    sensor_configure_gyro(conn, sensor_mac);
+    // temperature sampler
     sensor_configure_temp(conn, sensor_mac);
 
     json_t *jsonMsgTemperatureStart = json_createEmpty();
@@ -549,12 +562,13 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
 /*******************************************************************************
  *  function :    sensor_start_acceleration_sampler
  ******************************************************************************/
-/** @brief        Connects to a ble sensor, enables it's gyroscope and issues
- *                a temperature query.
+/** @brief        Configures the gyro and the temperature sampler and issues
+ *                a continous acceleration measurement over 20s
  *
  *  @type         global
  *
- *  @param[in]    conn     connection_t object
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
  *
@@ -566,7 +580,7 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    sensor_configure_gyro(conn, sensor_mac);
+    // configure acceleration sampler
     sensor_configure_accel(conn, sensor_mac);
 
     json_t *jsonMsgAccelStart = json_createEmpty();
@@ -586,4 +600,67 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
         json_setKeyValue(jsonMsgAccelStop, "command", "StopMeasurement");
     }
 
+
+    // start sampling
+    send_command(conn, jsonMsgAccelStart);
+
+    // wait 20s
+    sleep(20);
+
+    // stop sampling
+    send_command(conn, jsonMsgAccelStop);
+
+}
+
+
+/*******************************************************************************
+ *  function :    sensor_start_gyroscope_sampler
+ ******************************************************************************/
+/** @brief        Configures the gyro sampler and issues  a continous gyroscope
+ *                measurement over 20s
+ *
+ *  @type         global
+ *
+ *  @param[in]    conn          connection_t object
+ *  @param[in]    sensor_mac    the mac adress of the sensor
+ *
+ *  @return       none
+ *
+ ******************************************************************************/
+void sensor_start_gyroscope_sampler(connection_t *conn, char *sensor_mac)
+{
+    // If there is no connection abort
+    if(!conn->is_connected){
+        return;
+    }
+
+    // configure the gyro sampler
+    sensor_configure_gyro(conn, sensor_mac);
+
+    json_t *jsonMsgGyroStart = json_createEmpty();
+    json_t *jsonMsgGyroStop = json_createEmpty();
+
+    // prepare temperature sampling message
+    if (jsonMsgGyroStart != NULL) {
+        // prepare json object
+        json_setKeyValue(jsonMsgGyroStart, "device", sensor_mac);
+        json_setKeyValue(jsonMsgGyroStart, "command", "StartMeasurement");
+    }
+
+    // prepare temperature sampling stop message
+    if (jsonMsgGyroStop != NULL) {
+        // prepare json object
+        json_setKeyValue(jsonMsgGyroStop, "device", sensor_mac);
+        json_setKeyValue(jsonMsgGyroStop, "command", "StopMeasurement");
+    }
+
+
+    // start sampling
+    send_command(conn, jsonMsgGyroStart);
+
+    // wait 20s
+    sleep(20);
+
+    // stop sampling
+    send_command(conn, jsonMsgGyroStop);
 }
