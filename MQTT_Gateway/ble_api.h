@@ -36,6 +36,7 @@
 #define MSG_DBG             2
 #define MSG_SENT            3
 #define MSG_EVNT            4
+#define MSG_VAL             5
 
 /*----- Data types -----------------------------------------------------------*/
 typedef struct connection_s {

@@ -1,6 +1,7 @@
 /*----- Header-Files ---------------------------------------------------------*/
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
 #include "ble_api.h"
 #include "json.h"
 #include "broker_api.h"
@@ -25,23 +26,42 @@ static void *threaded_listener(void *pdata);
 /*******************************************************************************
  *  Callback :    recieved temperature data
  ******************************************************************************/
-void on_temperature_data_recieved(void)
+void on_temperature_data_recieved(json_t *msg)
 {
-    char dummy_temp[10] = "";
+    // Get subobject
+    json_t *jdata = json_object_get(msg, "data");
+    if(jdata == NULL){
+        return;
+    }
+
+    // Get Value as json object
+    json_t *jsonTemp = json_object_get(jdata, "value");
+    if(jsonTemp == NULL){
+        return;
+    }
+
+    // Get temperature and convert it to a string
+    int pcValue = json_integer_value(jsonTemp);
+    char str[20];
+    sprintf(str, "%d", pcValue);
+
     message_t tempMessage;
 
-    debug(MSG_DBG, "Temperaure Data recieved.");
+    debug(MSG_VAL, str);
 
-    tempMessage.payload = dummy_temp;
+    tempMessage.payload = pcValue;
     tempMessage.topic = TOPIC_TEMP;
 
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
+
+    json_cleanup(jdata);
+    json_cleanup(jsonTemp);
 }
 
 /*******************************************************************************
  *  Callback :    recieved acceleration data
  ******************************************************************************/
-void on_accel_data_recieved(void)
+void on_accel_data_recieved(json_t *msg)
 {
     char dummy_ax[10] = "";
     char dummy_ay[10] = "";
@@ -66,26 +86,62 @@ void on_accel_data_recieved(void)
 /*******************************************************************************
  *  Callback :    recieved gyroscope data
  ******************************************************************************/
-void on_gyro_data_recieved(void)
+void on_gyro_data_recieved(json_t *msg)
 {
-    char dummy_gx[10] = "";
-    char dummy_gy[10] = "";
-    char dummy_gz[10] = "";
+    char strX[20];
+    char strY[20];
+    char strZ[20];
+
+    // Get subobject
+    json_t *jdata = json_object_get(msg, "data");
+    if(jdata == NULL){
+        return;
+    }
+
+    // Unpack xyz as json objects
+    json_t *jsonTempX = json_object_get(jdata, "x");
+    if(jsonTempX == NULL){
+        return;
+    }
+    json_t *jsonTempY = json_object_get(jdata, "y");
+    if(jsonTempY == NULL){
+        return;
+    }
+    json_t *jsonTempZ = json_object_get(jdata, "z");
+    if(jsonTempZ == NULL){
+        return;
+    }
+
+    // Get numerical values and convert them back to strings
+    int x = json_integer_value(jsonTempX);
+    int y = json_integer_value(jsonTempY);
+    int z = json_integer_value(jsonTempZ);
+    sprintf(strX, "%d", x);
+    sprintf(strY, "%d", y);
+    sprintf(strZ, "%d", z);
+
+    debug(MSG_VAL, strX);
+    debug(MSG_VAL, strY);
+    debug(MSG_VAL, strZ);
+
     message_t tempMessage;
 
-    debug(MSG_DBG, "Gyroscope Data recieved.");
-
-    tempMessage.payload = dummy_gx;
+    tempMessage.payload = strX;
     tempMessage.topic = TOPIC_GX;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
-    tempMessage.payload = dummy_gy;
+    tempMessage.payload = strY;
     tempMessage.topic = TOPIC_GY;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
-    tempMessage.payload = dummy_gz;
+    tempMessage.payload = strZ;
     tempMessage.topic = TOPIC_GZ;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
+
+    json_cleanup(jdata);
+    json_cleanup(jsonTempX);
+    json_cleanup(jsonTempY);
+    json_cleanup(jsonTempZ);
 }
 
 /*******************************************************************************
@@ -140,13 +196,16 @@ void event_parser(json_t *jmsg)
         debug(MSG_EVNT, "New device discovered!");
     }
     if(!strcmp(pcValue, "DeviceConnected")){
-        debug(MSG_EVNT, "Connected to a device!");
         on_sensor_connected();
+        debug(MSG_EVNT, "Connected to a device!");
+    }
+    if(!strcmp(pcValue, "DeviceDisconnected")){
+        on_sensor_disconnected();
+        debug(MSG_EVNT, "Disconnected from a device!");
     }
     if(!strcmp(pcValue, "MeasurementStopped")){
         debug(MSG_EVNT, "Measurement stopped!");
         conn.is_measuring = false;
-        on_sensor_connected();
     }
     if(!strcmp(pcValue, "TempConfigured")){
         debug(MSG_EVNT, "Temp sampler configured!");
@@ -160,21 +219,17 @@ void event_parser(json_t *jmsg)
         debug(MSG_EVNT, "Gyro sampler configured!");
         conn.gyro_configured = true;
     }
-    if(!strcmp(pcValue, "DeviceDisconnected")){
-        on_sensor_disconnected();
-        debug(MSG_EVNT, "Disconnected from a device!");
-    }
     if(!strcmp(pcValue, "Temperature")){
-        //on_temperature_data_recieved();
         debug(MSG_EVNT, "Got temperature value");
+        on_temperature_data_recieved(jmsg);
     }
     if(!strcmp(pcValue, "AccelData")){
-        //on_accel_data_recieved();
         debug(MSG_EVNT, "Got accel value");
+        on_accel_data_recieved(jmsg);
     }
     if(!strcmp(pcValue, "GyroData")){
-        //on_gyro_data_recieved();
         debug(MSG_EVNT, "Got gyro value");
+        on_gyro_data_recieved(jmsg);
     }
 }
 
@@ -256,10 +311,9 @@ int main(int argc, char **argv)
 
     // Do a ble scan
     sensor_get_ble_scan(&conn);
-    sleep(5);
 
     // Force disconnect
-    sensor_force_disconnect(&conn, SENSOR_MAC);
+    //sensor_force_disconnect(&conn, SENSOR_MAC);
 
     // try to connect
     while(!conn.is_connected){
@@ -271,13 +325,10 @@ int main(int argc, char **argv)
     sensor_start_temperature_sampler(&conn, SENSOR_MAC);
 
     // try to disconnect
-    while(!conn.is_connected){
+    while(conn.is_connected){
         sensor_disconnect(&conn, SENSOR_MAC);
         usleep(500000L);
     }
-
-    // wait for a disconnect
-    while(conn.is_connected);
 
     // Cleanup
     pthread_cancel(listener);

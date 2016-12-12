@@ -34,16 +34,19 @@ void debug(int type, const char *msg)
 #ifdef DEBUG
     switch(type){
         case MSG_RECV:
-            printf("[RECIEVED]: \n%s\n", msg);
+            printf("[RECIEVED]: %s\n", msg);
             break;
         case MSG_DBG:
             printf("[DEBUG]: %s\n", msg);
             break;
         case MSG_SENT:
-            printf("[SENT]: \n%s\n", msg);
+            printf("[SENT]: %s\n", msg);
             break;
         case MSG_EVNT:
             printf("[EVENT]: %s\n", msg);
+            break;
+        case MSG_VAL:
+            printf("[VALUE]: %s\n", msg);
             break;
         default:
             printf("%s\n", msg);
