@@ -41,7 +41,13 @@
 typedef struct connection_s {
     // Control section
     bool is_connected;
-    pthread_mutex_t *lock_send;
+    bool gyro_configured;
+    bool temp_configured;
+    bool accel_configured;
+    bool is_measuring;
+
+    // Socket send mutex
+    pthread_mutex_t lock_send;
 
     // Command section
     char command[STRING_SIZE];

@@ -41,6 +41,7 @@ void debug(int type, const char *msg)
             break;
         case MSG_SENT:
             printf("[SENT]: \n%s\n", msg);
+            break;
         case MSG_EVNT:
             printf("[EVENT]: %s\n", msg);
             break;
@@ -51,7 +52,6 @@ void debug(int type, const char *msg)
     fflush(stdout);
 #endif
 }
-
 
 /*******************************************************************************
  *  function :    init_connect_obj
@@ -68,7 +68,12 @@ void debug(int type, const char *msg)
 void init_connect_obj(connection_t *conn)
 {
     // Set to not connected
-    conn->is_connected=false;
+    conn->is_connected = false;
+    conn->gyro_configured = false;
+    conn->temp_configured = false;
+    conn->accel_configured = false;
+    conn->is_measuring = false;
+
     // create an empty json object
     conn->jsonMsg=json_createEmpty();
 }
@@ -92,7 +97,6 @@ void free_connect_obj(connection_t *conn)
     // Close socket
     close(conn->socket_fd);
 }
-
 
 /*******************************************************************************
  *  function :    socket_get_connection
@@ -146,9 +150,9 @@ void send_command(connection_t *conn, json_t *jsonMsg)
     // debug output
     debug(MSG_SENT, json_getString(jsonMsg));
     // send command
-    pthread_mutex_lock(conn->lock_send);    // lock the thread
+    pthread_mutex_lock(&(conn->lock_send));    // lock the thread
     send(conn->socket_fd, tmp, STRING_SIZE, 0);
-    pthread_mutex_unlock(conn->lock_send);  // unlock the thread
+    pthread_mutex_unlock(&(conn->lock_send));  // unlock the thread
 }
 
 /*******************************************************************************
@@ -216,6 +220,8 @@ void sensor_connect(connection_t *conn, char *sensor_mac)
         return;
     }
 
+    //conn->is_connected=true;
+
     // create an empty json object
     json_t *jsonMsg = json_createEmpty();
 
@@ -252,6 +258,8 @@ void sensor_disconnect(connection_t *conn, char *sensor_mac)
     if(!conn->is_connected){
         return;
     }
+
+    //conn->is_connected=false;
 
     // create an empty json object
     json_t *jsonMsg = json_createEmpty();
@@ -315,13 +323,16 @@ static void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
     // Create an empty json object
     json_t *jsonMsgGyroConfig = json_createEmpty();
     json_t *jsonSubMsgGyroConfig = json_createEmpty();
+    json_t *odr = json_integer(95);
+    json_t *fullscale = json_integer(500);
+    json_t *on = json_boolean(true);
 
-    // ---- Gyroscope config
+    // Gyroscope config
     if (jsonMsgGyroConfig != NULL && jsonSubMsgGyroConfig != NULL) {
         // prepare nested object
-        json_setKeyValue(jsonSubMsgGyroConfig, "on", "true");
-        json_setKeyValue(jsonSubMsgGyroConfig, "fullscale", "500");
-        json_setKeyValue(jsonSubMsgGyroConfig, "odr", "95");
+        json_insertNestedObj(jsonSubMsgGyroConfig, "on", on);
+        json_insertNestedObj(jsonSubMsgGyroConfig,"fullscale", fullscale);
+        json_insertNestedObj(jsonSubMsgGyroConfig, "odr", odr);
         // prepare parent object and add nested object
         json_setKeyValue(jsonMsgGyroConfig, "device", sensor_mac);
         json_setKeyValue(jsonMsgGyroConfig, "command", "ConfigGyro");
@@ -334,6 +345,9 @@ static void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
     // Free ressources
     json_cleanup(jsonSubMsgGyroConfig);
     json_cleanup(jsonMsgGyroConfig);
+    json_cleanup(fullscale);
+    json_cleanup(odr);
+    json_cleanup(on);
 }
 
 /*******************************************************************************
@@ -359,12 +373,14 @@ static void sensor_configure_temp(connection_t *conn, char *sensor_mac)
     // Create an empty json object
     json_t *jsonMsgTempStart = json_createEmpty();
     json_t *jsonSubMsgTempStart = json_createEmpty();
+    json_t *odr = json_integer(1);
+    json_t *on = json_boolean(true);
 
     // Assemble temperature config
     if (jsonMsgTempStart != NULL && jsonSubMsgTempStart != NULL) {
         // prepare nested object
-        json_setKeyValue(jsonSubMsgTempStart, "on", "true");
-        json_setKeyValue(jsonSubMsgTempStart, "odr", "1");
+        json_insertNestedObj(jsonSubMsgTempStart, "on", on);
+        json_insertNestedObj(jsonSubMsgTempStart, "odr", odr);
         // prepare parent object and add nested object
         json_setKeyValue(jsonMsgTempStart, "device", sensor_mac);
         json_setKeyValue(jsonMsgTempStart, "command", "ConfigTemp");
@@ -377,6 +393,8 @@ static void sensor_configure_temp(connection_t *conn, char *sensor_mac)
     // Free ressources
     json_cleanup(jsonSubMsgTempStart);
     json_cleanup(jsonMsgTempStart);
+    json_cleanup(odr);
+    json_cleanup(on);
 }
 
 /*******************************************************************************
@@ -399,16 +417,19 @@ static void sensor_configure_accel(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    // Create an empty json object
+    // Create json objects
     json_t *jsonMsgAccelStart = json_createEmpty();
     json_t *jsonSubMsgAccelStart = json_createEmpty();
+    json_t *fullscale = json_integer(4);
+    json_t *odr = json_real(12.5);
+    json_t *on = json_boolean(true);
 
     // ---- Temperature sampler config
     if (jsonMsgAccelStart != NULL && jsonSubMsgAccelStart != NULL) {
         // prepare nested object
-        json_setKeyValue(jsonSubMsgAccelStart, "on", "true");
-        json_setKeyValue(jsonSubMsgAccelStart, "fullscale", "4");
-        json_setKeyValue(jsonSubMsgAccelStart, "odr", "12.5");
+        json_insertNestedObj(jsonSubMsgAccelStart, "on", on);
+        json_insertNestedObj(jsonSubMsgAccelStart, "fullscale", fullscale);
+        json_insertNestedObj(jsonSubMsgAccelStart, "odr", odr);
         // prepare parent object and add nested object
         json_setKeyValue(jsonMsgAccelStart, "device", sensor_mac);
         json_setKeyValue(jsonMsgAccelStart, "command", "ConfigAccel");
@@ -420,6 +441,9 @@ static void sensor_configure_accel(connection_t *conn, char *sensor_mac)
     // Free ressources
     json_cleanup(jsonSubMsgAccelStart);
     json_cleanup(jsonMsgAccelStart);
+    json_cleanup(fullscale);
+    json_cleanup(odr);
+    json_cleanup(on);
 }
 
 /*******************************************************************************
@@ -528,8 +552,17 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    // temperature sampler
-    sensor_configure_temp(conn, sensor_mac);
+    // try to configure the temperature sampler
+    while(!conn->temp_configured){
+        sensor_configure_temp(conn, sensor_mac);
+        usleep(1000000L);
+    }
+
+    // try to configure the gyro
+    while(!conn->gyro_configured){
+        sensor_configure_gyro(conn, sensor_mac);
+        usleep(1000000L);
+    }
 
     json_t *jsonMsgTemperatureStart = json_createEmpty();
     json_t *jsonMsgTemperatureStop = json_createEmpty();
@@ -551,11 +584,15 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
     // start sampling
     send_command(conn, jsonMsgTemperatureStart);
 
-    // wait 20s
+    // sleep for 20s
     sleep(20);
 
     // stop sampling
     send_command(conn, jsonMsgTemperatureStop);
+
+    // free ressources
+    json_cleanup(jsonMsgTemperatureStart);
+    json_cleanup(jsonMsgTemperatureStop);
 
 }
 
@@ -611,7 +648,6 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgAccelStop);
 
 }
-
 
 /*******************************************************************************
  *  function :    sensor_start_gyroscope_sampler

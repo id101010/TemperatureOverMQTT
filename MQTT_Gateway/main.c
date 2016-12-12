@@ -11,7 +11,7 @@
 // connection and listener object
 connection_t conn;
 pthread_t listener;
-pthread_mutex_t *lock_recv;
+pthread_mutex_t lock_recv;
 
 /*----- Function prototypes --------------------------------------------------*/
 void event_parser(json_t *jmsg);
@@ -131,30 +131,51 @@ void event_parser(json_t *jmsg)
     pcValue = json_getStringValue(jmsg, "event");
 
     // Cancel if pcValue is a NULLpointer
-    if(pcValue != NULL){
+    if(pcValue == NULL){
         return;
     }
 
     // Decide what to do
-    if(strcmp(pcValue, "DeviceConnected")){
+    if(strcmp(pcValue, "DeviceDiscovered") == 0){
+        debug(MSG_EVNT, "New device discovered!");
+    }
+    if(!strcmp(pcValue, "DeviceConnected")){
+        debug(MSG_EVNT, "Connected to a device!");
         on_sensor_connected();
     }
-    if(strcmp(pcValue, "DeviceDisconnected")){
+    if(!strcmp(pcValue, "MeasurementStopped")){
+        debug(MSG_EVNT, "Measurement stopped!");
+        conn.is_measuring = false;
+        on_sensor_connected();
+    }
+    if(!strcmp(pcValue, "TempConfigured")){
+        debug(MSG_EVNT, "Temp sampler configured!");
+        conn.temp_configured = true;
+    }
+    if(!strcmp(pcValue, "AccelConfigured")){
+        debug(MSG_EVNT, "Accel sampler configured!");
+        conn.accel_configured = true;
+    }
+    if(!strcmp(pcValue, "GyroConfigured")){
+        debug(MSG_EVNT, "Gyro sampler configured!");
+        conn.gyro_configured = true;
+    }
+    if(!strcmp(pcValue, "DeviceDisconnected")){
         on_sensor_disconnected();
+        debug(MSG_EVNT, "Disconnected from a device!");
     }
-    if(strcmp(pcValue, "Temperature")){
-        on_temperature_data_recieved();
+    if(!strcmp(pcValue, "Temperature")){
+        //on_temperature_data_recieved();
+        debug(MSG_EVNT, "Got temperature value");
     }
-    if(strcmp(pcValue, "AccelData")){
-        on_accel_data_recieved();
+    if(!strcmp(pcValue, "AccelData")){
+        //on_accel_data_recieved();
+        debug(MSG_EVNT, "Got accel value");
     }
-    if(strcmp(pcValue, "GyroData")){
-        on_gyro_data_recieved();
+    if(!strcmp(pcValue, "GyroData")){
+        //on_gyro_data_recieved();
+        debug(MSG_EVNT, "Got gyro value");
     }
-
-    // Free ressources
-    debug(MSG_EVNT, pcValue);
-    json_freeString(pcValue);
 }
 
 /*******************************************************************************
@@ -177,9 +198,9 @@ static void *threaded_listener(void *pdata)
 
     while(true){
         // Try to read a response from the socket and store it in tmp
-        pthread_mutex_lock(lock_recv);
+        pthread_mutex_lock(&lock_recv);
         int strlength = recv(conn.socket_fd, tmp, STRING_SIZE-1, 0);
-        pthread_mutex_unlock(lock_recv);
+        pthread_mutex_unlock(&lock_recv);
 
         int laststart = 0;
         for(i = 0; i < strlength; i++) {
@@ -220,36 +241,50 @@ static void *threaded_listener(void *pdata)
 int main(int argc, char **argv)
 {
     // Connecting to Broker
-    startBroker();
+    //startBroker();
 
     // Init the connection object and connect to sensor-hub socket
     init_connect_obj(&conn);
     socket_get_connection(&conn);
 
+    // Init mutexes
+    pthread_mutex_init(&lock_recv, NULL);
+    pthread_mutex_init(&conn.lock_send, NULL);
+
     // Set up listener thread
     pthread_create(&listener, NULL, threaded_listener, &conn);
 
-    // Init mutexes
-    pthread_mutex_init(lock_recv, NULL);
-    pthread_mutex_init(conn.lock_send, NULL);
-
     // Do a ble scan
     sensor_get_ble_scan(&conn);
+    sleep(5);
+
     // Force disconnect
-    //sensor_force_disconnect(&conn, SENSOR_MAC);
-    // Connect to sensor
-    //sensor_connect(&conn, SENSOR_MAC);
-    // Read Temperature from ble sensor
-    //sensor_start_temperature_sampler(&conn, SENSOR_MAC);
-    // Disconnect from sensor
-    //sensor_disconnect(&conn, SENSOR_MAC);
+    sensor_force_disconnect(&conn, SENSOR_MAC);
+
+    // try to connect
+    while(!conn.is_connected){
+        sensor_connect(&conn, SENSOR_MAC);
+        usleep(500000L);
+    }
+
+    // Read temperature and gyro data from the ble sensor for 20s
+    sensor_start_temperature_sampler(&conn, SENSOR_MAC);
+
+    // try to disconnect
+    while(!conn.is_connected){
+        sensor_disconnect(&conn, SENSOR_MAC);
+        usleep(500000L);
+    }
+
+    // wait for a disconnect
+    while(conn.is_connected);
 
     // Cleanup
     pthread_cancel(listener);
-    pthread_mutex_destroy(lock_recv);
-    pthread_mutex_destroy(conn.lock_send);
+    pthread_mutex_destroy(&lock_recv);
+    pthread_mutex_destroy(&conn.lock_send);
     free_connect_obj(&conn);
-    disconectBroker();
+    //disconectBroker();
     // Exit
     return(EXIT_SUCCESS);
 }
