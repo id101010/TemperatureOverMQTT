@@ -6,7 +6,6 @@
 #include "broker_api.h"
 
 /*----- Defines --------------------------------------------------------------*/
-#define RECV_TIMEOUT_SEC 5
 
 /*----- Globals --------------------------------------------------------------*/
 // connection and listener object
@@ -21,6 +20,65 @@ static void *threaded_listener(void *pdata);
 /*----- Data -----------------------------------------------------------------*/
 
 /*----- Implementation -------------------------------------------------------*/
+
+
+/*******************************************************************************
+ *  Callback :    recieved temperature data
+ ******************************************************************************/
+void on_temperature_data_recieved(void)
+{
+    debug(MSG_DBG, "Temperaure Data recieved.");
+
+    /*
+     * TODO: Send Data to Broker
+     */
+}
+
+/*******************************************************************************
+ *  Callback :    recieved acceleration data
+ ******************************************************************************/
+void on_accel_data_recieved(void)
+{
+    debug(MSG_DBG, "Acceleration Data recieved.");
+    /*
+     * TODO: Send Data to Broker
+     */
+}
+
+/*******************************************************************************
+ *  Callback :    recieved gyroscope data
+ ******************************************************************************/
+void on_gyro_data_recieved(void)
+{
+    debug(MSG_DBG, "Gyroscope Data recieved.");
+    /*
+     * TODO: Send Data to Broker
+     */
+}
+
+/*******************************************************************************
+ *  Callback :    sensor has been connected
+ ******************************************************************************/
+void on_sensor_connected(void)
+{
+    debug(MSG_DBG, "Sensor connected.");
+
+    if(!conn.is_connected){
+        conn.is_connected = true;
+    }
+}
+
+/*******************************************************************************
+ *  Callback :    sensor has been disconnected
+ ******************************************************************************/
+void on_sensor_disconnected(void)
+{
+    debug(MSG_DBG, "Sensor disconnected.");
+
+    if(conn.is_connected){
+        conn.is_connected = false;
+    }
+}
 
 /*******************************************************************************
  *  function :    event_parser
@@ -40,10 +98,31 @@ void event_parser(json_t *jmsg)
 
     pcValue = json_getStringValue(jmsg, "event");
 
+    // Cancel if pcValue is a NULLpointer
     if(pcValue != NULL){
-        debug(MSG_EVNT, pcValue);
-        json_freeString(pcValue);
+        return;
     }
+
+    // Decide what to do
+    if(strcmp(pcValue, "DeviceConnected")){
+        on_sensor_connected();
+    }
+    if(strcmp(pcValue, "DeviceDisconnected")){
+        on_sensor_disconnected();
+    }
+    if(strcmp(pcValue, "Temperature")){
+        on_temperature_data_recieved();
+    }
+    if(strcmp(pcValue, "AccelData")){
+        on_accel_data_recieved();
+    }
+    if(strcmp(pcValue, "GyroData")){
+        on_gyro_data_recieved();
+    }
+
+    // Free ressources
+    debug(MSG_EVNT, pcValue);
+    json_freeString(pcValue);
 }
 
 /*******************************************************************************

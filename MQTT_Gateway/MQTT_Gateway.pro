@@ -2,10 +2,13 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+LIBS += -lpthread
 LIBS += -pthread
 LIBS += -L$$PWD/libs/libpaho -lpaho-mqtt3a
 LIBS += -L$$PWD/libs/jansson/lib -ljansson
 
+QMAKE_CFLAGS += -lpthread
+QMAKE_LFLAGS += -lpthread
 QMAKE_CFLAGS += -pthread
 QMAKE_LFLAGS += -pthread
 
