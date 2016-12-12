@@ -144,7 +144,9 @@ void send_command(connection_t *conn, json_t *jsonMsg)
     // debug output
     debug(MSG_SENT, json_getString(jsonMsg));
     // send command
+    //pthread_lock_mutex(conn->lock_send);
     send(conn->socket_fd, tmp, STRING_SIZE, 0);
+    //pthread_unlock_mutex(conn->lock_send);
 }
 
 /*******************************************************************************

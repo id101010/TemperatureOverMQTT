@@ -2,10 +2,12 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-LIBS += -lpthread
+LIBS += -pthread
 LIBS += -L$$PWD/libs/libpaho -lpaho-mqtt3a
 LIBS += -L$$PWD/libs/jansson/lib -ljansson
-LIBS +=
+
+QMAKE_CFLAGS += -pthread
+QMAKE_LFLAGS += -pthread
 
 target.path = /home/pi
 INSTALLS += target

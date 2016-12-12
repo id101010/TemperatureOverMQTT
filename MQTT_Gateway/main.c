@@ -12,6 +12,7 @@
 // connection and listener object
 connection_t conn;
 pthread_t listener;
+pthread_mutex_t lock_recv;
 
 /*----- Function prototypes --------------------------------------------------*/
 void event_parser(json_t *jmsg);
@@ -65,7 +66,9 @@ static void *threaded_listener(void *pdata)
 
     while(true){
         // Try to read a response from the socket and store it in tmp
+        //pthread_lock_mutex(lock_recv);
         int strlength = recv(conn.socket_fd, tmp, STRING_SIZE-1, 0);
+        //pthread_unlock_mutex(lock_recv);
 
         int laststart = 0;
         for(i = 0; i < strlength; i++) {
@@ -115,7 +118,7 @@ int main(int argc, char **argv)
     // Do a ble scan
     sensor_get_ble_scan(&conn);
     // Force disconnect
-    //sensor_force_disconnect(&conn, SENSOR_MAC);
+    sensor_force_disconnect(&conn, SENSOR_MAC);
     // Connect to sensor
     //sensor_connect(&conn, SENSOR_MAC);
     // Read Temperature from ble sensor
