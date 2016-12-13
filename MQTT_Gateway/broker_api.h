@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ble_api.h>
 #include <libs/libpaho/MQTTAsync.h>
 
 /*----- Defines --------------------------------------------------------------*/

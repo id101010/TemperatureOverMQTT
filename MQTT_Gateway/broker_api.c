@@ -90,8 +90,7 @@ void onDisconnect(void* context, MQTTAsync_successData* response)
  ******************************************************************************/
 void onSend(void* context, MQTTAsync_successData* response)
 {
-    printf("Message with token value %d delivery confirmed\n", response->token);
-    fflush(stdout);
+    debug(MSG_SENT, "Message delivery confirmed");
     finished_MQTT = 1;
 }
 
@@ -212,15 +211,10 @@ void sendMQTTmessage(message_t *message)
 
     if ((rc = MQTTAsync_sendMessage(client, message->payload, &pubmsg, &response_opts)) != MQTTASYNC_SUCCESS)
     {        
-        printf("Failed to start sendMessage, return code %d\n", rc);
-        fflush(stdout);
+        debug(MSG_EVNT, "Failed to start send message");
         exit(-1);
     }
-
-    printf("Waiting for publication of %s\n"
-    "on topic %s for client with ClientID: %s\n",
-    message->payload, message->topic, CLIENTID);
-    fflush(stdout);
+    debug(MSG_EVNT, "Waiting for publication");
     while (!finished_MQTT)
     {
         usleep(TIMEOUT);
