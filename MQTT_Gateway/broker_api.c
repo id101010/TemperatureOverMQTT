@@ -22,14 +22,13 @@ MQTTAsync_responseOptions response_opts = MQTTAsync_responseOptions_initializer;
 /*******************************************************************************
  *  function :    connlost
  ******************************************************************************/
-/** @brief          function is executed when a connection is lost and trys to
- *                  reconnect
+/** @brief        function is executed when a connection is lost and trys to
+ *                reconnect
  *
+ *  @type         private
  *
- *  @type           private
- *
- *  @param[in]      contex: contains any application-specific context
- *                  cause: reason for disconnecting
+ *  @param[in]    contex: contains any application-specific context
+ *                cause: reason for disconnecting
  *
  *  @return       none
  *
@@ -56,13 +55,12 @@ void connlost(void *context, char *cause)
 /*******************************************************************************
  *  function :    onDisconnect
  ******************************************************************************/
-/** @brief          function is executed when Broker is succesfull disconnected
+/** @brief        function is executed when Broker is succesfull disconnected
  *
+ *  @type         private
  *
- *  @type           private
- *
- *  @param[in]      contex: contains any application-specific context
- *                  response: respons from MQTTAsync_disconnect();
+ *  @param[in]    contex: contains any application-specific context
+ *                response: respons from MQTTAsync_disconnect();
  *
  *  @return       none
  *
@@ -79,13 +77,13 @@ void onDisconnect(void* context, MQTTAsync_successData* response)
 /*******************************************************************************
  *  function :    onSend
  ******************************************************************************/
-/** @brief          function is executed when a message is send succesfull
+/** @brief        function is executed when a message is send succesfull
  *
  *
- *  @type           private
+ *  @type         private
  *
- *  @param[in]      contex: contains any application-specific context
- *                  response: respons from MQTTAsync_sendMessage();
+ *  @param[in]    contex: contains any application-specific context
+ *                response: respons from MQTTAsync_sendMessage();
  *
  *  @return       none
  *
@@ -100,15 +98,15 @@ void onSend(void* context, MQTTAsync_successData* response)
 /*******************************************************************************
  *  function :    onConnectFailure
  ******************************************************************************/
-/** @brief          function is executed when a sccesfull connection is
- *                  established
+/** @brief        function is executed when a sccesfull connection is
+ *                established
  *
- *  @type           private
+ *  @type         private
  *
- *  @param[in]      contex: A pointer to the context value originally passed
+ *  @param[in]    contex: A pointer to the context value originally passed
  *                          to MQTTAsync_responseOptions, which contains any
  *                          application-specific context
- *                  response: respons from MQTTAsync_connect();
+ *                response: respons from MQTTAsync_connect();
  *
  *  @return       none
  *
@@ -124,15 +122,15 @@ void onConnectFailure(void* context, MQTTAsync_failureData* response)
 /*******************************************************************************
  *  function :    onConnect
  ******************************************************************************/
-/** @brief          function is executed when a successfull connection is
- *                  established
+/** @brief        function is executed when a successfull connection is
+ *                established
  *
- *  @type           private
+ *  @type         private
  *
- *  @param[in]      contex: A pointer to the context value originally passed
+ *  @param[in]    contex: A pointer to the context value originally passed
  *                          to MQTTAsync_responseOptions, which contains any
  *                          application-specific context
- *                  response: respons from MQTTAsync_connect();
+ *                response: respons from MQTTAsync_connect();
  *
  *  @return       none
  *
@@ -147,14 +145,14 @@ void onConnect(void* context, MQTTAsync_successData* response)
 /*******************************************************************************
  *  function :    startBroker
  ******************************************************************************/
-/** @brief          connect to broker
+/** @brief         connect to broker
  *
  *
- *  @type           global
+ *  @type          global
  *
- *  @param[in]      none
+ *  @param[in]     none
  *
- *  @return         none
+ *  @return        none
  *
  ******************************************************************************/
 void startBroker()
@@ -191,14 +189,14 @@ void startBroker()
 /*******************************************************************************
  *  function :    sendMQTTmesage
  ******************************************************************************/
-/** @brief          send a message to broker
+/** @brief        send a message to broker
  *
  *
- *  @type           global
+ *  @type         global
  *
- *  @param[in]      struct message_t
+ *  @param[in]    struct message_t
  *
- *  @return        none
+ *  @return       none
  *
  ******************************************************************************/
 void sendMQTTmessage(message_t *message)
@@ -231,14 +229,13 @@ void sendMQTTmessage(message_t *message)
 /*******************************************************************************
  *  function :    disconectBroker
  ******************************************************************************/
-/** @brief          disconnects the broker and kills the client
+/** @brief        disconnects the broker and kills the client
  *
+ *  @type         global
  *
- *  @type           global
+ *  @param[in]    none
  *
- *  @param[in]      none
- *
- *  @return         none
+ *  @return       none
  *
  ******************************************************************************/
 void disconectBroker()

@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include <libs/libpaho/MQTTAsync.h>
 
-/*----- Defines            --------------------------------------------------*/
+/*----- Defines --------------------------------------------------------------*/
 #define ADDRESS     "tcp://iot.i3s.bfh.ch:1883"
 #define CLIENTID    "BLESensor"
 #define TOPIC       "EmbSy/gruppe_15/test"
@@ -36,6 +36,5 @@ typedef struct message_s{
 void startBroker();
 void sendMQTTmessage(message_t *message);
 void disconectBroker();
-
 
 #endif // BROKER_API_H

@@ -555,15 +555,15 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    // try to configure the temperature sampler
-    while(!conn->temp_configured){
-        sensor_configure_temp(conn, sensor_mac);
+    // try to configure the gyro (needs to be configured for temperature sampling)
+    while(!conn->gyro_configured){
+        sensor_configure_gyro(conn, sensor_mac);
         usleep(1000000L);
     }
 
-    // try to configure the gyro
-    while(!conn->gyro_configured){
-        sensor_configure_gyro(conn, sensor_mac);
+    // try to configure the temperature sampler
+    while(!conn->temp_configured){
+        sensor_configure_temp(conn, sensor_mac);
         usleep(1000000L);
     }
 
@@ -620,8 +620,11 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
         return;
     }
 
-    // configure acceleration sampler
-    sensor_configure_accel(conn, sensor_mac);
+    // try to configure the temperature sampler
+    while(!conn->accel_configured){
+        sensor_configure_accel(conn, sensor_mac);
+        usleep(1000000L);
+    }
 
     json_t *jsonMsgAccelStart = json_createEmpty();
     json_t *jsonMsgAccelStop = json_createEmpty();
@@ -639,7 +642,6 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
         json_setKeyValue(jsonMsgAccelStop, "device", sensor_mac);
         json_setKeyValue(jsonMsgAccelStop, "command", "StopMeasurement");
     }
-
 
     // start sampling
     send_command(conn, jsonMsgAccelStart);

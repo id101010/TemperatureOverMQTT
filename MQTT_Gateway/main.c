@@ -28,6 +28,9 @@ static void *threaded_listener(void *pdata);
  ******************************************************************************/
 void on_temperature_data_recieved(json_t *msg)
 {
+    char str[20];
+    message_t tempMessage;
+
     // Get subobject
     json_t *jdata = json_object_get(msg, "data");
     if(jdata == NULL){
@@ -42,11 +45,9 @@ void on_temperature_data_recieved(json_t *msg)
 
     // Get temperature and convert it to a string
     int pcValue = json_integer_value(jsonTemp);
-    char str[20];
     sprintf(str, "%d", pcValue);
 
-    message_t tempMessage;
-
+    // Debug message
     debug(MSG_VAL, str);
 
     tempMessage.payload = pcValue;
@@ -63,34 +64,10 @@ void on_temperature_data_recieved(json_t *msg)
  ******************************************************************************/
 void on_accel_data_recieved(json_t *msg)
 {
-    char dummy_ax[10] = "";
-    char dummy_ay[10] = "";
-    char dummy_az[10] = "";
-    message_t tempMessage;
-
-    debug(MSG_DBG, "Acceleration Data recieved.");
-
-    tempMessage.payload = dummy_ax;
-    tempMessage.topic = TOPIC_AX;
-    sendMQTTmessage(&tempMessage);
-
-    tempMessage.payload = dummy_ay;
-    tempMessage.topic = TOPIC_AY;
-    sendMQTTmessage(&tempMessage);
-
-    tempMessage.payload = dummy_az;
-    tempMessage.topic = TOPIC_AZ;
-    sendMQTTmessage(&tempMessage);
-}
-
-/*******************************************************************************
- *  Callback :    recieved gyroscope data
- ******************************************************************************/
-void on_gyro_data_recieved(json_t *msg)
-{
     char strX[20];
     char strY[20];
     char strZ[20];
+    message_t tempMessage;
 
     // Get subobject
     json_t *jdata = json_object_get(msg, "data");
@@ -116,15 +93,79 @@ void on_gyro_data_recieved(json_t *msg)
     int x = json_integer_value(jsonTempX);
     int y = json_integer_value(jsonTempY);
     int z = json_integer_value(jsonTempZ);
+
+    // Copy to stringbuffer
     sprintf(strX, "%d", x);
     sprintf(strY, "%d", y);
     sprintf(strZ, "%d", z);
 
+    // Debug Messages
     debug(MSG_VAL, strX);
     debug(MSG_VAL, strY);
     debug(MSG_VAL, strZ);
 
+    tempMessage.payload = strX;
+    tempMessage.topic = TOPIC_AX;
+    //sendMQTTmessage(&tempMessage);
+
+    tempMessage.payload = strY;
+    tempMessage.topic = TOPIC_AY;
+    //sendMQTTmessage(&tempMessage);
+
+    tempMessage.payload = strZ;
+    tempMessage.topic = TOPIC_AZ;
+    //sendMQTTmessage(&tempMessage);
+
+    json_cleanup(jdata);
+    json_cleanup(jsonTempX);
+    json_cleanup(jsonTempY);
+    json_cleanup(jsonTempZ);
+}
+
+/*******************************************************************************
+ *  Callback :    recieved gyroscope data
+ ******************************************************************************/
+void on_gyro_data_recieved(json_t *msg)
+{
+    char strX[20];
+    char strY[20];
+    char strZ[20];
     message_t tempMessage;
+
+    // Get subobject
+    json_t *jdata = json_object_get(msg, "data");
+    if(jdata == NULL){
+        return;
+    }
+
+    // Unpack xyz as json objects
+    json_t *jsonTempX = json_object_get(jdata, "x");
+    if(jsonTempX == NULL){
+        return;
+    }
+    json_t *jsonTempY = json_object_get(jdata, "y");
+    if(jsonTempY == NULL){
+        return;
+    }
+    json_t *jsonTempZ = json_object_get(jdata, "z");
+    if(jsonTempZ == NULL){
+        return;
+    }
+
+    // Get numerical values and convert them back to strings
+    int x = json_integer_value(jsonTempX);
+    int y = json_integer_value(jsonTempY);
+    int z = json_integer_value(jsonTempZ);
+
+    // Copy to stringbuffer
+    sprintf(strX, "%d", x);
+    sprintf(strY, "%d", y);
+    sprintf(strZ, "%d", z);
+
+    // Debug Messages
+    debug(MSG_VAL, strX);
+    debug(MSG_VAL, strY);
+    debug(MSG_VAL, strZ);
 
     tempMessage.payload = strX;
     tempMessage.topic = TOPIC_GX;
@@ -149,7 +190,7 @@ void on_gyro_data_recieved(json_t *msg)
  ******************************************************************************/
 void on_sensor_connected(void)
 {
-    debug(MSG_DBG, "Sensor connected.");
+    debug(MSG_EVNT, "Sensor connected.");
 
     if(!conn.is_connected){
         conn.is_connected = true;
@@ -161,7 +202,7 @@ void on_sensor_connected(void)
  ******************************************************************************/
 void on_sensor_disconnected(void)
 {
-    debug(MSG_DBG, "Sensor disconnected.");
+    debug(MSG_EVNT, "Sensor disconnected.");
 
     if(conn.is_connected){
         conn.is_connected = false;
@@ -196,12 +237,12 @@ void event_parser(json_t *jmsg)
         debug(MSG_EVNT, "New device discovered!");
     }
     if(!strcmp(pcValue, "DeviceConnected")){
-        on_sensor_connected();
         debug(MSG_EVNT, "Connected to a device!");
+        on_sensor_connected();
     }
     if(!strcmp(pcValue, "DeviceDisconnected")){
-        on_sensor_disconnected();
         debug(MSG_EVNT, "Disconnected from a device!");
+        on_sensor_disconnected();
     }
     if(!strcmp(pcValue, "MeasurementStopped")){
         debug(MSG_EVNT, "Measurement stopped!");
@@ -312,9 +353,6 @@ int main(int argc, char **argv)
     // Do a ble scan
     sensor_get_ble_scan(&conn);
 
-    // Force disconnect
-    //sensor_force_disconnect(&conn, SENSOR_MAC);
-
     // try to connect
     while(!conn.is_connected){
         sensor_connect(&conn, SENSOR_MAC);
@@ -335,7 +373,10 @@ int main(int argc, char **argv)
     pthread_mutex_destroy(&lock_recv);
     pthread_mutex_destroy(&conn.lock_send);
     free_connect_obj(&conn);
+
+    // disconnect from broker
     //disconectBroker();
+
     // Exit
     return(EXIT_SUCCESS);
 }
