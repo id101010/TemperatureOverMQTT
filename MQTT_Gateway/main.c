@@ -169,15 +169,15 @@ void on_gyro_data_recieved(json_t *msg)
 
     tempMessage.payload = strX;
     tempMessage.topic = TOPIC_GX;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strY;
     tempMessage.topic = TOPIC_GY;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strZ;
     tempMessage.topic = TOPIC_GZ;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
     json_cleanup(jdata);
     json_cleanup(jsonTempX);
@@ -266,11 +266,11 @@ void event_parser(json_t *jmsg)
     }
     if(!strcmp(pcValue, "AccelData")){
         debug(MSG_EVNT, "Got accel value");
-        //on_accel_data_recieved(jmsg);
+        on_accel_data_recieved(jmsg);
     }
     if(!strcmp(pcValue, "GyroData")){
         debug(MSG_EVNT, "Got gyro value");
-        //on_gyro_data_recieved(jmsg);
+        on_gyro_data_recieved(jmsg);
     }
 }
 
