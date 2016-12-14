@@ -266,11 +266,11 @@ void event_parser(json_t *jmsg)
     }
     if(!strcmp(pcValue, "AccelData")){
         debug(MSG_EVNT, "Got accel value");
-        on_accel_data_recieved(jmsg);
+        //on_accel_data_recieved(jmsg);
     }
     if(!strcmp(pcValue, "GyroData")){
         debug(MSG_EVNT, "Got gyro value");
-        on_gyro_data_recieved(jmsg);
+        //on_gyro_data_recieved(jmsg);
     }
 }
 

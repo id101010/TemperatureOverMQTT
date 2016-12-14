@@ -245,7 +245,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
         var hostname = "147.87.98.17";
         var port = 9001;
 
-        // Create a client instance
+	var intervalID = window.setInterval(myCallback, 2000);
+	
+	function myCallback(){
+	        drawChart_temp();
+		drawChart_accel();
+	}
+		
+        
+	// Create a client instance
         var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
 
 		// Create circular Array
@@ -420,8 +428,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			//console.log("data_accel=" + data_accel);
 			//console.log("data_temp=" + data_temp);
 			
-			drawChart_temp();
-			drawChart_accel();
 	
 		}	
 		
