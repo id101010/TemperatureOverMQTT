@@ -131,10 +131,22 @@
 				</div>
 			</div>
 		</div>
+	</div>	
 	</div>
+	
+	
+	<!-- Google Chart gyro -->
+	<div class="w3-row-padding">
+		<div class="w3-col l3 m6 w3-margin-bottom">
+			<div class="w3-display-container">
+				<div id="google_chart_gyro" style="width: 1200px; height: 600px">
+				</div>
+			</div>
+		</div>
 	</div>
-
-  <!-- About Section -->
+	
+		
+	<!-- About Section -->
 	<div class="w3-container w3-padding-32" id="about">
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">About</h3>
 		<p> This is the website for the "Miniproject" in Embedded Systems. These three students of the class E4p worked on this project.</p>
@@ -174,8 +186,8 @@
 		</div>
 	 </div>
 
-
-  <!-- Contact Section -->
+	 
+ <!-- Contact Section -->
 	<div class="w3-container w3-padding-32" id="contact">
 		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Contact</h3>
 		<p>Lets get in touch and talk about Embedded Systems and RaspberryPi for our next project.</p>
@@ -188,13 +200,15 @@
 			<i class="fa fa-paper-plane"></i> SEND MESSAGE
 		</button>
 		</form>
+		
+		<!-- Google Map -->
+		<div class="w3-container w3-padding-32" id="position">
+			<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Position</h3>
+			<div id="googleMap" class="w3-grayscale" style="width:1200px;height:450px;"></div>
+		</div>
+	</div>	 	
 	</div>
- 
-	<!-- Google Map -->
-	<div class="w3-container w3-padding-32" id="position">
-		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Position</h3>
-		<div id="googleMap" class="w3-grayscale" style="width:1200px;height:450px;"></div>
-	</div>
+
  
 <!-- End page content -->
 </div>
@@ -253,27 +267,41 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		var cA_ax = new Array();
 		var cA_ay = new Array();
 		var cA_az = new Array();
+		var cA_gx = new Array();
+		var cA_gy = new Array();
+		var cA_gz = new Array();
 		var data = new Array(100);
 		var maxLength = 100;	
 		window.cA_ax = cA_ax;	
 		window.cA_ay = cA_ay;
 		window.cA_az = cA_az;
+		window.cA_gx = cA_gx;	
+		window.cA_gy = cA_gy;
+		window.cA_gz = cA_gz;
 		window.cA_temp = cA_temp;
 
 		
 		var data_accel = new Array(100);
 		var data_temp = new Array(100);
+		var data_gyro = new Array(100);
 		window.data_accel = data_accel;
 		window.data_temp = data_temp;
 			
 		for (var i = 0; i < maxLength; ++i) {
 				data_accel[i] = new Array(4);
 			}
+
+		for (var i = 0; i < maxLength; ++i) {
+				data_gyro[i] = new Array(4);
+			}			
 			
 		for (i=0; i < maxLength; i++) {
 			data_accel[i][1] = Number("0");
 			data_accel[i][2] = Number("0");
 			data_accel[i][3] = Number("0");
+			data_gyro[i][1] = Number("0");
+			data_gyro[i][2] = Number("0");
+			data_gyro[i][3] = Number("0");
 			data_temp[i] = Number("0");
 			// check data init
 		//	console.log("data_accel init = " + data_accel);
@@ -300,17 +328,18 @@ google.maps.event.addDomListener(window, 'load', initialize);
         google.charts.load('current', {packages: ['line']});
         google.charts.setOnLoadCallback(drawChart_temp);
 		google.charts.setOnLoadCallback(drawChart_accel);
+		google.charts.setOnLoadCallback(drawChart_gyro);
 		
 		var i=0;
 		var maxLength=100;
 		
         function drawChart_temp() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'time');
-            data.addColumn('number', 'temp');
+            var dataT = new google.visualization.DataTable();
+            dataT.addColumn('string', 'time');
+            dataT.addColumn('number', 'temp');
 			
 			for (i=0; i < maxLength; i++){
-				data.addRows([
+				dataT.addRows([
 				['', Number(data_temp[i])] 
 			]);
 			}
@@ -319,12 +348,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 chart: {
                     title: 'Temperature Data from Sensor'
                 },
+
                 width: 1200,
                 height: 600
             };
 
             var chart = new google.charts.Line(document.getElementById('google_chart_temp'));
-            chart.draw(data, options);	
+            chart.draw(dataT, options);	
 			
 			google.visualization.events.addListener(chart, 'error', function (googleError) {
 			google.visualization.errors.removeError(googleError.id);
@@ -333,14 +363,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
         }
 
 		function drawChart_accel() {
-			var data = new google.visualization.DataTable();
-            data.addColumn('string', 'time');
-			data.addColumn('number', 'ax');
-			data.addColumn('number', 'ay');
-			data.addColumn('number', 'az');
+			var dataA = new google.visualization.DataTable();
+            dataA.addColumn('string', 'time');
+			dataA.addColumn('number', 'ax');
+			dataA.addColumn('number', 'ay');
+			dataA.addColumn('number', 'az');
 			
 			for (i=0; i < maxLength; i++){
-				data.addRows([
+				dataA.addRows([
 				['', Number(data_accel[i][1]), Number(data_accel[i][2]), Number(data_accel[i][3])]	
 			]);
 			}
@@ -354,12 +384,44 @@ google.maps.event.addDomListener(window, 'load', initialize);
             };
 			
 			var chart = new google.charts.Line(document.getElementById('google_chart_accel'));
-            chart.draw(data, options);
+            chart.draw(dataA, options);
 			
 			google.visualization.events.addListener(chart, 'error', function (googleError) {
 			google.visualization.errors.removeError(googleError.id);
 			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
 			});
+        }
+
+
+		function drawChart_gyro() {
+			var dataG = new google.visualization.DataTable();
+            dataG.addColumn('string', 'time');
+			dataG.addColumn('number', 'gx');
+			dataG.addColumn('number', 'gy');
+			dataG.addColumn('number', 'gz');
+			
+			for (i=0; i < maxLength; i++){
+				dataG.addRows([
+				['', Number(data_gyro[i][1]), Number(data_gyro[i][2]), Number(data_gyro[i][3])]	
+			]);
+			}
+
+		   var options = {
+				chart: {
+                   title: 'Gyro Data from Sensor'
+                },
+                width: 1200,
+                height: 500
+            };
+			
+			var chart = new google.charts.Line(document.getElementById('google_chart_gyro'));
+            chart.draw(dataG, options);
+			
+			google.visualization.events.addListener(chart, 'error', function (googleError) {
+			google.visualization.errors.removeError(googleError.id);
+			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
+			}); 
+		
         }
 		
         // Called when the client connects
@@ -407,6 +469,18 @@ google.maps.event.addDomListener(window, 'load', initialize);
 				add_az(message.payloadString);
 			//	console.log("add_az: topic=" + message.destinationName + ", az=" + message.payloadString);
 				break;
+			case "EmbSy/gruppe_15/gx":
+				add_gx(message.payloadString);
+			//	console.log("add_gx: topic=" + message.destinationName + ", gx=" + message.payloadString);
+				break;
+			case "EmbSy/gruppe_15/gy":
+				add_gy(message.payloadString);
+			//	console.log("add_gy: topic=" + message.destinationName + ", gy=" + message.payloadString);
+				break;
+			case "EmbSy/gruppe_15/gz":
+				add_gz(message.payloadString);
+			//	console.log("add_gz: topic=" + message.destinationName + ", gz=" + message.payloadString);
+				break;	
 			default:
 			console.log("NO_ADD: Message with unknown topic=" + message.destinationName + ", message=" + message.payloadString);
 			}
@@ -415,14 +489,20 @@ google.maps.event.addDomListener(window, 'load', initialize);
 				data_accel[i][1] = cA_ax[i];
 				data_accel[i][2] = cA_ay[i];
 				data_accel[i][3] = cA_az[i];
+				
+				data_gyro[i][1] = cA_gx[i];
+				data_gyro[i][2] = cA_gy[i];
+				data_gyro[i][3] = cA_gz[i];
+				
 				data_temp[i] = cA_temp[i];
 			}
 			//console.log("data_accel=" + data_accel);
 			//console.log("data_temp=" + data_temp);
 			
+
 			drawChart_temp();
 			drawChart_accel();
-	
+			drawChart_gyro();
 		}	
 		
 		
@@ -456,7 +536,28 @@ google.maps.event.addDomListener(window, 'load', initialize);
 				cA_az.pop();
 			}
 			cA_az.unshift(element);
-		};		
+		};
+		
+		var add_gx = function(element){
+			if(cA_gx.length == maxLength){
+				cA_gx.pop();
+			}
+			cA_gx.unshift(element);
+		};
+
+		var add_gy = function(element){
+			if(cA_gy.length == maxLength){
+				cA_gy.pop();
+			}
+			cA_gy.unshift(element);
+		};
+
+		var add_gz = function(element){
+			if(cA_gz.length == maxLength){
+				cA_gz.pop();
+			}
+			cA_gz.unshift(element);
+		};			
 			
 				
 		// Testmessage for testing communication to, and from the MQTT Broker
@@ -470,7 +571,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			message.destinationName = "EmbSy/gruppe_15/temp";
 			client.send(message);
 		//	console.log("second test message sent to topic EmbSy/gruppe_15/temp");
-			
+
+		
 			message = new Paho.MQTT.Message("100");
 			message.destinationName = "EmbSy/gruppe_15/ax";
 			client.send(message);
@@ -493,6 +595,31 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			
 			message = new Paho.MQTT.Message("350");
 			message.destinationName = "EmbSy/gruppe_15/az";
+			client.send(message);
+
+			
+			message = new Paho.MQTT.Message("100");
+			message.destinationName = "EmbSy/gruppe_15/gx";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("150");
+			message.destinationName = "EmbSy/gruppe_15/gx";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("200");
+			message.destinationName = "EmbSy/gruppe_15/gy";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("250");
+			message.destinationName = "EmbSy/gruppe_15/gy";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("300");
+			message.destinationName = "EmbSy/gruppe_15/gz";
+			client.send(message);
+			
+			message = new Paho.MQTT.Message("350");
+			message.destinationName = "EmbSy/gruppe_15/gz";
 			client.send(message);
 			
 		//	console.log("cA_temp =" + cA_temp + "cA_ax=" + cA_ax + "cA_ay=" + cA_ay + "cA_az=" + cA_az);			
