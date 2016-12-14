@@ -297,10 +297,25 @@ void sensor_disconnect(connection_t *conn, char *sensor_mac)
  ******************************************************************************/
 void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
 {
+    // Objects
+    json_t *jsonMsgTemperatureStop = json_createEmpty();
+
+    // prepare temperature sampling stop message
+    if (jsonMsgTemperatureStop != NULL) {
+        // prepare json object
+        json_setKeyValue(jsonMsgTemperatureStop, "device", sensor_mac);
+        json_setKeyValue(jsonMsgTemperatureStop, "command", "StopMeasurement");
+    }
+
+    // stop sampling
+    send_command(conn, jsonMsgTemperatureStop);
+
     conn->is_connected = true;
     sensor_disconnect(conn, sensor_mac);
     conn->is_connected = false;
     debug(MSG_DBG, "Force disconnected!");
+
+    json_cleanup(jsonMsgTemperatureStop);
 }
 
 /*******************************************************************************

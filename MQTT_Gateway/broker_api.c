@@ -90,7 +90,8 @@ void onDisconnect(void* context, MQTTAsync_successData* response)
  ******************************************************************************/
 void onSend(void* context, MQTTAsync_successData* response)
 {
-    debug(MSG_SENT, "Message delivery confirmed");
+    //debug(MSG_SENT, "Message delivery confirmed");
+    //debug(MSG_DBG, response->alt.pub.message.payload);
     finished_MQTT = 1;
 }
 
@@ -181,7 +182,7 @@ void startBroker()
         #if defined(WIN32) || defined(WIN64)
             Sleep(100);
         #else
-        usleep(TIMEOUT);
+            usleep(TIMEOUT);
         #endif
     }
 }
@@ -209,7 +210,7 @@ void sendMQTTmessage(message_t *message)
     pubmsg.retained = 0;
     deliveredtoken = 0;
 
-    if ((rc = MQTTAsync_sendMessage(client, message->payload, &pubmsg, &response_opts)) != MQTTASYNC_SUCCESS)
+    if ((rc = MQTTAsync_sendMessage(client, message->topic, &pubmsg, &response_opts)) != MQTTASYNC_SUCCESS)
     {        
         debug(MSG_EVNT, "Failed to start send message");
         exit(-1);

@@ -30,7 +30,6 @@
 typedef struct message_s{
     char *payload;
     char *topic;
-
 }message_t;
 
 /*----- Function prototypes --------------------------------------------------*/

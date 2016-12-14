@@ -50,10 +50,10 @@ void on_temperature_data_recieved(json_t *msg)
     // Debug message
     debug(MSG_VAL, str);
 
-    tempMessage.payload = pcValue;
+    tempMessage.payload = str;
     tempMessage.topic = TOPIC_TEMP;
 
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     json_cleanup(jdata);
     json_cleanup(jsonTemp);
@@ -106,15 +106,15 @@ void on_accel_data_recieved(json_t *msg)
 
     tempMessage.payload = strX;
     tempMessage.topic = TOPIC_AX;
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strY;
     tempMessage.topic = TOPIC_AY;
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strZ;
     tempMessage.topic = TOPIC_AZ;
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     json_cleanup(jdata);
     json_cleanup(jsonTempX);
@@ -169,15 +169,15 @@ void on_gyro_data_recieved(json_t *msg)
 
     tempMessage.payload = strX;
     tempMessage.topic = TOPIC_GX;
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strY;
     tempMessage.topic = TOPIC_GY;
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strZ;
     tempMessage.topic = TOPIC_GZ;
-    //sendMQTTmessage(&tempMessage);
+    sendMQTTmessage(&tempMessage);
 
     json_cleanup(jdata);
     json_cleanup(jsonTempX);
@@ -337,7 +337,12 @@ static void *threaded_listener(void *pdata)
 int main(int argc, char **argv)
 {
     // Connecting to Broker
-    //startBroker();
+    startBroker();
+
+    message_t tempMessage;
+    tempMessage.payload = PAYLOAD;
+    tempMessage.topic = TOPIC;
+    sendMQTTmessage(&tempMessage);
 
     // Init the connection object and connect to sensor-hub socket
     init_connect_obj(&conn);
@@ -350,22 +355,27 @@ int main(int argc, char **argv)
     // Set up listener thread
     pthread_create(&listener, NULL, threaded_listener, &conn);
 
+    //Force disconnect
+    //sensor_force_disconnect(&conn, SENSOR_MAC);
+
     // Do a ble scan
     sensor_get_ble_scan(&conn);
 
     // try to connect
     while(!conn.is_connected){
         sensor_connect(&conn, SENSOR_MAC);
-        usleep(500000L);
+        usleep(1000000L);
     }
 
     // Read temperature and gyro data from the ble sensor for 20s
     sensor_start_temperature_sampler(&conn, SENSOR_MAC);
+    //sensor_start_gyroscope_sampler(&conn, SENSOR_MAC);
+    //sensor_start_acceleration_sampler(&conn, SENSOR_MAC);
 
     // try to disconnect
     while(conn.is_connected){
         sensor_disconnect(&conn, SENSOR_MAC);
-        usleep(500000L);
+        usleep(1000000L);
     }
 
     // Cleanup
@@ -375,7 +385,7 @@ int main(int argc, char **argv)
     free_connect_obj(&conn);
 
     // disconnect from broker
-    //disconectBroker();
+    disconectBroker();
 
     // Exit
     return(EXIT_SUCCESS);
