@@ -633,7 +633,7 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgTemperatureStart);
 
     // sleep for 20s
-    sleep(20);
+    sleep(30);
 
     // stop sampling
     send_command(conn, jsonMsgTemperatureStop);
@@ -694,7 +694,7 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgAccelStart);
 
     // wait 20s
-    sleep(20);
+    sleep(30);
 
     // stop sampling
     send_command(conn, jsonMsgAccelStop);
@@ -743,7 +743,6 @@ void sensor_start_gyroscope_sampler(connection_t *conn, char *sensor_mac)
         json_setKeyValue(jsonMsgGyroStop, "device", sensor_mac);
         json_setKeyValue(jsonMsgGyroStop, "command", "StopMeasurement");
     }
-
 
     // start sampling
     send_command(conn, jsonMsgGyroStart);

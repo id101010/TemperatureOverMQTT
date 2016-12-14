@@ -106,15 +106,15 @@ void on_accel_data_recieved(json_t *msg)
 
     tempMessage.payload = strX;
     tempMessage.topic = TOPIC_AX;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strY;
     tempMessage.topic = TOPIC_AY;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
     tempMessage.payload = strZ;
     tempMessage.topic = TOPIC_AZ;
-    sendMQTTmessage(&tempMessage);
+    //sendMQTTmessage(&tempMessage);
 
     json_cleanup(jdata);
     json_cleanup(jsonTempX);
@@ -220,6 +220,8 @@ void on_sensor_disconnected(void)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void event_parser(json_t *jmsg)
 {
@@ -286,6 +288,8 @@ void event_parser(json_t *jmsg)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 static void *threaded_listener(void *pdata)
 {
@@ -332,6 +336,8 @@ static void *threaded_listener(void *pdata)
  *  @param[in]    argv     argument vector
  *
  *  @return       EXIT_SUCCESS
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 int main(int argc, char **argv)
