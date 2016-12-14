@@ -28,6 +28,8 @@
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void debug(int type, const char *msg)
 {
@@ -67,6 +69,8 @@ void debug(int type, const char *msg)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void init_connect_obj(connection_t *conn)
 {
@@ -92,6 +96,8 @@ void init_connect_obj(connection_t *conn)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void free_connect_obj(connection_t *conn)
 {
@@ -112,6 +118,8 @@ void free_connect_obj(connection_t *conn)
  *  @param[in]    conn  Connection object
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 void socket_get_connection(connection_t *conn)
@@ -144,6 +152,8 @@ void socket_get_connection(connection_t *conn)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void send_command(connection_t *conn, json_t *jsonMsg)
 {
@@ -170,6 +180,8 @@ void send_command(connection_t *conn, json_t *jsonMsg)
  *  @param[out]   output   json string object
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 bool recieve_answer(connection_t *conn, char *output)
@@ -215,6 +227,8 @@ bool recieve_answer(connection_t *conn, char *output)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void sensor_connect(connection_t *conn, char *sensor_mac)
 {
@@ -253,6 +267,8 @@ void sensor_connect(connection_t *conn, char *sensor_mac)
  *  @param[in]    sensor_mac    the mac adress of the sensor to disconnect from
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 void sensor_disconnect(connection_t *conn, char *sensor_mac)
@@ -294,6 +310,8 @@ void sensor_disconnect(connection_t *conn, char *sensor_mac)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
 {
@@ -329,6 +347,8 @@ void sensor_force_disconnect(connection_t *conn, char *sensor_mac)
  *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 static void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
@@ -380,6 +400,8 @@ static void sensor_configure_gyro(connection_t *conn, char *sensor_mac)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 static void sensor_configure_temp(connection_t *conn, char *sensor_mac)
 {
@@ -426,6 +448,8 @@ static void sensor_configure_temp(connection_t *conn, char *sensor_mac)
  *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 static void sensor_configure_accel(connection_t *conn, char *sensor_mac)
@@ -475,6 +499,8 @@ static void sensor_configure_accel(connection_t *conn, char *sensor_mac)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void sensor_get_ble_scan(connection_t *conn)
 {
@@ -522,6 +548,8 @@ void sensor_get_ble_scan(connection_t *conn)
  *
  *  @return       none
  *
+ *  @author       Schmocker Aaron
+ *
  ******************************************************************************/
 void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
 {
@@ -561,6 +589,8 @@ void sensor_get_single_temperature(connection_t *conn, char *sensor_mac)
  *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
@@ -603,7 +633,7 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgTemperatureStart);
 
     // sleep for 20s
-    sleep(20);
+    sleep(30);
 
     // stop sampling
     send_command(conn, jsonMsgTemperatureStop);
@@ -626,6 +656,8 @@ void sensor_start_temperature_sampler(connection_t *conn, char *sensor_mac)
  *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
@@ -662,7 +694,7 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
     send_command(conn, jsonMsgAccelStart);
 
     // wait 20s
-    sleep(20);
+    sleep(30);
 
     // stop sampling
     send_command(conn, jsonMsgAccelStop);
@@ -681,6 +713,8 @@ void sensor_start_acceleration_sampler(connection_t *conn, char *sensor_mac)
  *  @param[in]    sensor_mac    the mac adress of the sensor
  *
  *  @return       none
+ *
+ *  @author       Schmocker Aaron
  *
  ******************************************************************************/
 void sensor_start_gyroscope_sampler(connection_t *conn, char *sensor_mac)
@@ -709,7 +743,6 @@ void sensor_start_gyroscope_sampler(connection_t *conn, char *sensor_mac)
         json_setKeyValue(jsonMsgGyroStop, "device", sensor_mac);
         json_setKeyValue(jsonMsgGyroStop, "command", "StopMeasurement");
     }
-
 
     // start sampling
     send_command(conn, jsonMsgGyroStart);

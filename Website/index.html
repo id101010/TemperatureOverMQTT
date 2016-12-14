@@ -259,7 +259,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         var hostname = "147.87.98.17";
         var port = 9001;
 
-        // Create a client instance
+		// Create a client instance
         var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
 
 		// Create circular Array
@@ -321,7 +321,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
             onFailure: onConnectionFailure
         });
 		}
-		
 		
 		// Google Chart
 		// Load package
