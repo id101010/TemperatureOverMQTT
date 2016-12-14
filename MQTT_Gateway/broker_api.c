@@ -32,6 +32,8 @@ MQTTAsync_responseOptions response_opts = MQTTAsync_responseOptions_initializer;
  *
  *  @return       none
  *
+ *  @author       Marcus Schluep
+ *
  ******************************************************************************/
 void connlost(void *context, char *cause)
 {
@@ -64,6 +66,8 @@ void connlost(void *context, char *cause)
  *
  *  @return       none
  *
+ *  @author       Marcus Schluep
+ *
  ******************************************************************************/
 void onDisconnect(void* context, MQTTAsync_successData* response)
 {
@@ -87,6 +91,8 @@ void onDisconnect(void* context, MQTTAsync_successData* response)
  *
  *  @return       none
  *
+ *  @author       Marcus Schluep
+ *
  ******************************************************************************/
 void onSend(void* context, MQTTAsync_successData* response)
 {
@@ -109,6 +115,8 @@ void onSend(void* context, MQTTAsync_successData* response)
  *                response: respons from MQTTAsync_connect();
  *
  *  @return       none
+ *
+ *  @author       Marcus Schluep
  *
  ******************************************************************************/
 void onConnectFailure(void* context, MQTTAsync_failureData* response)
@@ -134,6 +142,8 @@ void onConnectFailure(void* context, MQTTAsync_failureData* response)
  *
  *  @return       none
  *
+ *  @author       Marcus Schluep
+ *
  ******************************************************************************/
 void onConnect(void* context, MQTTAsync_successData* response)
 {
@@ -153,6 +163,8 @@ void onConnect(void* context, MQTTAsync_successData* response)
  *  @param[in]     none
  *
  *  @return        none
+ *
+ *  @author       Marcus Schluep
  *
  ******************************************************************************/
 void startBroker()
@@ -198,6 +210,8 @@ void startBroker()
  *
  *  @return       none
  *
+ *  @author       Marcus Schluep
+ *
  ******************************************************************************/
 void sendMQTTmessage(message_t *message)
 {
@@ -231,6 +245,8 @@ void sendMQTTmessage(message_t *message)
  *  @param[in]    none
  *
  *  @return       none
+ *
+ *  @author       Marcus Schluep
  *
  ******************************************************************************/
 void disconectBroker()
