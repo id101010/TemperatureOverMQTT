@@ -3,638 +3,221 @@
 <title>BFH EMBSY Miniproject</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- CSS Library from w3schools.com -->
 <link rel="stylesheet" href="css/w3.css">
 
-
 <body>
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top">
+      <ul class="w3-navbar w3-white w3-wide w3-padding-8 w3-card-2">
+        <li>
+          <a href="#home" class="w3-margin-left"><b>EMBSY</b> Miniproject</a>
+        </li>
+        <!-- Float links to the right. Hide them on small screens -->
+        <li class="w3-right w3-hide-small">
+          <a href="#projects" class="w3-left">Projects</a>
+          <a href="#gcharts" class="w3-left">Data-Charts</a>
+          <a href="#about" class="w3-left">About</a>
+          <a href="#contact" class="w3-left w3-margin-right">Contact</a>
+          <a href="#position" class="w3-left w3-margin-right">Position</a>
+        </li>
+      </ul>
+    </div>
 
-
-<!-- Navbar (sit on top) -->
-<div class="w3-top">
-  <ul class="w3-navbar w3-white w3-wide w3-padding-8 w3-card-2">
-    <li>
-      <a href="#home" class="w3-margin-left"><b>EMBSY</b> Miniproject</a>
-    </li>
-    <!-- Float links to the right. Hide them on small screens -->
-    <li class="w3-right w3-hide-small">
-      <a href="#projects" class="w3-left">Projects</a>
-	  <a href="#gcharts" class="w3-left">Data-Charts</a>
-      <a href="#about" class="w3-left">About</a>
-      <a href="#contact" class="w3-left w3-margin-right">Contact</a>
-	  <a href="#position" class="w3-left w3-margin-right">Position</a>
-    </li>
-  </ul>
-</div>
-
-
-<!-- Header -->
-<header class="w3-display-container w3-content w3-wide" style="max-width:1200px;" id="home">
-  <img class="w3-image" src="picture/main_electronics.jpg" alt="Electronics" width="1200" height="800">
-  <div class="w3-display-middle/ w3-margin-top w3-center">
-    <h1 class="w3-xxlarge"><span class="w3-border w3-border-black w3-padding">EMBSY</span> <span class="w3-hide-small">Embedded Systems Miniproject</span></h1>
-  </div>
-</header>
-
+    <!-- Header -->
+    <header class="w3-display-container w3-content w3-wide" style="max-width:1200px;" id="home">
+      <img class="w3-image" src="picture/main_electronics.jpg" alt="Electronics" width="1200" height="800">
+      <div class="w3-display-middle/ w3-margin-top w3-center">
+        <h1 class="w3-xxlarge"><span class="w3-border w3-border-black w3-padding">EMBSY</span> <span class="w3-hide-small">Embedded Systems Miniproject</span></h1>
+      </div>
+    </header>
 
 <!-- Page content -->
 <div class="w3-content w3-padding" style="max-width:1264px">
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
+        </div>
+    </div>
+    
+    <!-- Project Section -->
+    <div class="w3-container w3-padding-32" id="projects">
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Projects</h3>
+            <p> This project aims to collect and visualize temperature and acceleration data using a Bluetooth-Low-Energy sensor connected to a RaspberryPi. To visualize the aquired data we use google charts.
+    </div> 
+        
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
+        </div>
+    </div>
+    
+    <!-- Button Head Discription -->
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p> Please Connect to the MQTT Broker to get data from the sensor</p>
+            </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p>Press to send testdata to the MQTT Broker and get them automatically back to the Chart, "connect" necessary</p>
+            </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p>Press to stop the visualisation mode to analyze the data</p>
+            </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p>Press to start the visualisation again. Start mode ist the default mode.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom"> 
+            <div class="w3-display-container">
+                <p><button class="w3-btn-block" onClick="onButtonConnectPressed();">Connect</button></p>
+            </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p><button class="w3-btn-block" onClick="onButtonTestPressed();">Send Testdata</button></p>
+            </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p><button class="w3-btn-block" onClick="onButtonDisconnectPressed();">Disconnect</button></p>
+            </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <p><button class="w3-btn-block" onClick="onButtonRestartPressed();">Restart</button></p> 
+            </div>
+        </div>
+    </div>
+    <div class="w3-container w3-padding-32" id="gcharts">
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
+        </div>
+    </div>
+    
+    <!-- Google Charts -->
 
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
-		</div>
-	</div>
-	
-  <!-- Project Section -->
-	<div class="w3-container w3-padding-32" id="projects">
-		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Projects</h3>
-			<p> This project aims to collect and visualize temperature and acceleration data using a Bluetooth-Low-Energy sensor connected to a RaspberryPi. To visualize the aquired data we use google charts.
-	</div> 
-		
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
-		</div>
-	</div>
-	
-	
-	<!-- Button Head Discription -->
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p> Please Connect to the MQTT Broker to get data from the sensor</p>
-			</div>
-		</div>
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p>Press to send testdata to the MQTT Broker and get them automatically back to the Chart, "connect" necessary</p>
-			</div>
-		</div>
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p>Press to stop the visualisation mode to analyze the data</p>
-			</div>
-		</div>
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p>Press to start the visualisation again. Start mode ist the default mode.</p>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Buttons -->
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom"> 
-			<div class="w3-display-container">
-				<p><input type="button" value="connect" onClick="ButtonConnect()" class="w3-btn-block" /></p>
-			</div>
-		</div>
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="testmessage()" >test</button></p>
-			</div>
-		</div>
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p><button class="w3-btn-block" onClick="alert('stop - not implemented yet')" onClick="">stop</button></p>
-			</div>
-		</div>
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<p><button class="w3-btn-block"onClick="alert('start - not implemented yet')">start</button></p>  <!--onClick="alert('start - not implemented yet')"--> 
-			</div>
-		</div>
-	</div>
-	<div class="w3-container w3-padding-32" id="gcharts">
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom" style="height: 20px"> 
-		</div>
-	</div>
-	
-	
-	<!-- Google Chart -->
-	<!-- Google Chart Temperature-->
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<div id="google_chart_temp" style="width: 1200px; height: 650px">
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	
-	<!-- Google Chart accel-->
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<div id="google_chart_accel" style="width: 1200px; height: 600px">
-				</div>
-			</div>
-		</div>
-	</div>	
-	</div>
-	
-	
-	<!-- Google Chart gyro -->
-	<div class="w3-row-padding">
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<div class="w3-display-container">
-				<div id="google_chart_gyro" style="width: 1200px; height: 600px">
-				</div>
-			</div>
-		</div>
-	</div>
-	
-		
-	<!-- About Section -->
-	<div class="w3-container w3-padding-32" id="about">
-		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">About</h3>
-		<p> This is the website for the "Miniproject" in Embedded Systems. These three students of the class E4p worked on this project.</p>
-	</div>
-	
-	<div class="w3-row-padding w3-grayscale">
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<img src="picture/Student_1.jpg" alt="Student_1" style="width:100%">
-			<h3>Simon Schertz</h3>
-			<p class="w3-opacity">Student</p>
-			<p>Student in Electrical Engineering</p>
-			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
-		</div>
-		
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<img src="picture/Student_2.jpg" alt="Student_2" style="width:100%">
-			<h3>Marcus Schluep</h3>
-			<p class="w3-opacity">Student</p>
-			<p>Student in Electrical Engineering</p>
-			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
-		</div>
-		
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<img src="picture/Student_3.jpg" alt="Student_3" style="width:100%">
-			<h3>Aaron Schmocker</h3>
-			<p class="w3-opacity">Student</p>
-			<p>Student in Electrical Engineering</p>
-			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
-		</div>
-		
-		<div class="w3-col l3 m6 w3-margin-bottom">
-			<img src="picture/vacant.jpg" alt="Student_3" style="width:100%">
-			<h3>software engineer (vacant)</h3>
-			<p class="w3-opacity">Software Engineer</p>
-			<p>the snuffle Software Engineer</p>
-			<p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
-		</div>
-	 </div>
+    <!-- Temperature -->
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <div id="google_chart_temp" style="width: 1200px; height: 650px">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Acceleration -->
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <div id="google_chart_accel" style="width: 1200px; height: 600px">
+                </div>
+            </div>
+        </div>
+    </div>  
+    </div>
+    
+    <!-- Gyroscope -->
+    <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <div class="w3-display-container">
+                <div id="google_chart_gyro" style="width: 1200px; height: 600px">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+        
+    <!-- About Section -->
+    <div class="w3-container w3-padding-32" id="about">
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">About</h3>
+        <p> This is the website for the "Miniproject" in Embedded Systems. These three students of the class E4p worked on this project.</p>
+    </div>
+    
+    <div class="w3-row-padding w3-grayscale">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <img src="picture/Student_1.jpg" alt="Student_1" style="width:100%">
+            <h3>Simon Schertz</h3>
+            <p class="w3-opacity">Student</p>
+            <p>Student in Electrical Engineering</p>
+            <p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
+        </div>
+        
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <img src="picture/Student_2.jpg" alt="Student_2" style="width:100%">
+            <h3>Marcus Schluep</h3>
+            <p class="w3-opacity">Student</p>
+            <p>Student in Electrical Engineering</p>
+            <p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
+        </div>
+        
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <img src="picture/Student_3.jpg" alt="Student_3" style="width:100%">
+            <h3>Aaron Schmocker</h3>
+            <p class="w3-opacity">Student</p>
+            <p>Student in Electrical Engineering</p>
+            <p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
+        </div>
+        
+        <div class="w3-col l3 m6 w3-margin-bottom">
+            <img src="picture/vacant.jpg" alt="Student_3" style="width:100%">
+            <h3>software engineer (vacant)</h3>
+            <p class="w3-opacity">Software Engineer</p>
+            <p>the snuffle Software Engineer</p>
+            <p><button onClick="alert('send email - not implemented yet')" class="w3-btn-block">Contact</button></p>
+        </div>
+     </div>
 
-	 
- <!-- Contact Section -->
-	<div class="w3-container w3-padding-32" id="contact">
-		<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Contact</h3>
-		<p>Lets get in touch and talk about Embedded Systems and RaspberryPi for our next project.</p>
-		<form action="form.asp" target="_blank">
-		<input class="w3-input" type="text" placeholder="Name" required name="Name">
-		<input class="w3-input w3-section" type="text" placeholder="Email" required name="Email">
-		<input class="w3-input w3-section" type="text" placeholder="Subject" required name="Subject">
-		<input class="w3-input w3-section" type="text" placeholder="Comment" required name="Comment">
-		<button onClick="alert('send email - not implemented yet')" class="w3-btn w3-section" type="submit">
-			<i class="fa fa-paper-plane"></i> SEND MESSAGE
-		</button>
-		</form>
-		
-		<!-- Google Map -->
-		<div class="w3-container w3-padding-32" id="position">
-			<h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Position</h3>
-			<div id="googleMap" class="w3-grayscale" style="width:1200px;height:450px;"></div>
-		</div>
-	</div>	 	
-	</div>
+    <!-- Contact Section -->
+    <div class="w3-container w3-padding-32" id="contact">
+        <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Contact</h3>
+        <p>Lets get in touch and talk about Embedded Systems and RaspberryPi for our next project.</p>
+        <form action="form.asp" target="_blank">
+        <input class="w3-input" type="text" placeholder="Name" required name="Name">
+        <input class="w3-input w3-section" type="text" placeholder="Email" required name="Email">
+        <input class="w3-input w3-section" type="text" placeholder="Subject" required name="Subject">
+        <input class="w3-input w3-section" type="text" placeholder="Comment" required name="Comment">
+        <button onClick="alert('send email - not implemented yet')" class="w3-btn w3-section" type="submit">
+            <i class="fa fa-paper-plane"></i> SEND MESSAGE
+        </button>
+        </form>
+        
+        <!-- Google Map -->
+        <div class="w3-container w3-padding-32" id="position">
+            <h3 class="w3-border-bottom w3-border-light-grey w3-padding-12">Position</h3>
+            <div id="googleMap" class="w3-grayscale" style="width:1200px;height:450px;"></div>
+        </div>
+    </div>      
+    </div>
 
- 
 <!-- End page content -->
 </div>
-
 
 <!-- Footer -->
 <footer class="w3-center w3-black w3-padding-16">
   <p>copyright</p>
 </footer>
 
-
-
 <!-- SCRIPTS -->
 <!-- Add Google Maps -->
 <script src="https://maps.googleapis.com/maps/api/js"></script>
-
-<script>
-<!-- Google Map Location -->
-var myCenter = new google.maps.LatLng(47.06231884334362, 7.6143685170973185);
-
-function initialize() {
-var mapProp = {
-  center: myCenter,
-  zoom: 13,
-  scrollwheel: false,
-  draggable: false,
-  mapTypeId: google.maps.MapTypeId.ROADMAP
-  };
-
-var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-
-var marker = new google.maps.Marker({
-  position: myCenter,
-});
-
-marker.setMap(map);
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-</script>
-
+<script srt="javascript/gmaps.js"></script>
 
 <!-- JavaScript MQTT Communication and visualization on Google Charts -->
-	<script type="text/javascript" src="javascript/mqttws31.js"></script>
-	<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        // Parameters
-        var hostname = "147.87.98.17";
-        var port = 9001;
+<script type="text/javascript" src="javascript/mqttws31.js"></script>
+<script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
+<script src="javascript/mqttcommunication.js"></script>
 
-		// Create a client instance
-        var client = new Paho.MQTT.Client(hostname, Number(port), "clientId");
-
-		// Create circular Array
-		var cA_temp = new Array();
-		var cA_ax = new Array();
-		var cA_ay = new Array();
-		var cA_az = new Array();
-		var cA_gx = new Array();
-		var cA_gy = new Array();
-		var cA_gz = new Array();
-		var data = new Array(100);
-		var maxLength = 100;	
-		window.cA_ax = cA_ax;	
-		window.cA_ay = cA_ay;
-		window.cA_az = cA_az;
-		window.cA_gx = cA_gx;	
-		window.cA_gy = cA_gy;
-		window.cA_gz = cA_gz;
-		window.cA_temp = cA_temp;
-
-		
-		var data_accel = new Array(100);
-		var data_temp = new Array(100);
-		var data_gyro = new Array(100);
-		window.data_accel = data_accel;
-		window.data_temp = data_temp;
-			
-		for (var i = 0; i < maxLength; ++i) {
-				data_accel[i] = new Array(4);
-			}
-
-		for (var i = 0; i < maxLength; ++i) {
-				data_gyro[i] = new Array(4);
-			}			
-			
-		for (i=0; i < maxLength; i++) {
-			data_accel[i][1] = Number("0");
-			data_accel[i][2] = Number("0");
-			data_accel[i][3] = Number("0");
-			data_gyro[i][1] = Number("0");
-			data_gyro[i][2] = Number("0");
-			data_gyro[i][3] = Number("0");
-			data_temp[i] = Number("0");
-			// check data init
-		//	console.log("data_accel init = " + data_accel);
-		//	console.log("data_temp init = " + data_temp);
-		}
-			
-        // Set callback handlers
-        client.onConnectionLost = onConnectionLost;
-        client.onMessageArrived = onMessageArrived;
-		
-		function ButtonConnect(){
-        // Connect the client
-        client.connect({
-            userName: "gruppe_15",
-            password: "JfC65L05",
-            onSuccess: onConnect,
-            onFailure: onConnectionFailure
-        });
-		}
-		
-		// Google Chart
-		// Load package
-        google.charts.load('current', {packages: ['line']});
-        google.charts.setOnLoadCallback(drawChart_temp);
-		google.charts.setOnLoadCallback(drawChart_accel);
-		google.charts.setOnLoadCallback(drawChart_gyro);
-		
-		var i=0;
-		var maxLength=100;
-		
-        function drawChart_temp() {
-            var dataT = new google.visualization.DataTable();
-            dataT.addColumn('string', 'time');
-            dataT.addColumn('number', 'temp');
-			
-			for (i=0; i < maxLength; i++){
-				dataT.addRows([
-				['', Number(data_temp[i])] 
-			]);
-			}
-			
-            var options = {
-                chart: {
-                    title: 'Temperature Data from Sensor'
-                },
-
-                width: 1200,
-                height: 600
-            };
-
-            var chart = new google.charts.Line(document.getElementById('google_chart_temp'));
-            chart.draw(dataT, options);	
-			
-			google.visualization.events.addListener(chart, 'error', function (googleError) {
-			google.visualization.errors.removeError(googleError.id);
-			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
-			});
-        }
-
-		function drawChart_accel() {
-			var dataA = new google.visualization.DataTable();
-            dataA.addColumn('string', 'time');
-			dataA.addColumn('number', 'ax');
-			dataA.addColumn('number', 'ay');
-			dataA.addColumn('number', 'az');
-			
-			for (i=0; i < maxLength; i++){
-				dataA.addRows([
-				['', Number(data_accel[i][1]), Number(data_accel[i][2]), Number(data_accel[i][3])]	
-			]);
-			}
-
-		   var options = {
-				chart: {
-                   title: 'accel Data from Sensor'
-                },
-                width: 1200,
-                height: 500
-            };
-			
-			var chart = new google.charts.Line(document.getElementById('google_chart_accel'));
-            chart.draw(dataA, options);
-			
-			google.visualization.events.addListener(chart, 'error', function (googleError) {
-			google.visualization.errors.removeError(googleError.id);
-			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
-			});
-        }
-
-
-		function drawChart_gyro() {
-			var dataG = new google.visualization.DataTable();
-            dataG.addColumn('string', 'time');
-			dataG.addColumn('number', 'gx');
-			dataG.addColumn('number', 'gy');
-			dataG.addColumn('number', 'gz');
-			
-			for (i=0; i < maxLength; i++){
-				dataG.addRows([
-				['', Number(data_gyro[i][1]), Number(data_gyro[i][2]), Number(data_gyro[i][3])]	
-			]);
-			}
-
-		   var options = {
-				chart: {
-                   title: 'Gyro Data from Sensor'
-                },
-                width: 1200,
-                height: 500
-            };
-			
-			var chart = new google.charts.Line(document.getElementById('google_chart_gyro'));
-            chart.draw(dataG, options);
-			
-			google.visualization.events.addListener(chart, 'error', function (googleError) {
-			google.visualization.errors.removeError(googleError.id);
-			document.getElementById("error_msg").innerHTML = "Message removed = '" + googleError.message + "'";
-			}); 
-		
-        }
-		
-        // Called when the client connects
-        function onConnect() {
-            // Once a connection has been made, make a subscription and send a message.
-            console.log("onConnect");
-			client.subscribe("EmbSy/gruppe_15/#");  // Topics: test, temp, ax, ay, az
-			console.log("subscribe topic: EmbSby/gruppe_15/#");			
-        }
-
-		
-        // Called when the client could not connect
-        function onConnectionFailure() {
-            console.log("onConnectionFailure");
-        }
-
-		
-        // Called when the client loses its connection
-        function onConnectionLost(responseObject) {
-            if (responseObject.errorCode !== 0) {
-                console.log("onConnectionLost:" + responseObject.errorMessage);
-            }
-        }
-
-		
-        // Called when a message arrives
-        function onMessageArrived(message) {
-            //console.log("Message arrived: topic=" + message.destinationName + ", message=" + message.payloadString);
-			
-			// check Topics
-			switch(message.destinationName){
-			case "EmbSy/gruppe_15/temp":
-				add_temp(message.payloadString);
-			//	console.log("add_temp: topic=" + message.destinationName + ", temp=" + message.payloadString);
-				break;
-			case "EmbSy/gruppe_15/ax":
-				add_ax(message.payloadString);
-			//	console.log("add_ax: topic=" + message.destinationName + ", ax=" + message.payloadString);
-				break;
-			case "EmbSy/gruppe_15/ay":
-				add_ay(message.payloadString);
-			//	console.log("add_ay: topic=" + message.destinationName + ", ay=" + message.payloadString);
-				break;
-			case "EmbSy/gruppe_15/az":
-				add_az(message.payloadString);
-			//	console.log("add_az: topic=" + message.destinationName + ", az=" + message.payloadString);
-				break;
-			case "EmbSy/gruppe_15/gx":
-				add_gx(message.payloadString);
-			//	console.log("add_gx: topic=" + message.destinationName + ", gx=" + message.payloadString);
-				break;
-			case "EmbSy/gruppe_15/gy":
-				add_gy(message.payloadString);
-			//	console.log("add_gy: topic=" + message.destinationName + ", gy=" + message.payloadString);
-				break;
-			case "EmbSy/gruppe_15/gz":
-				add_gz(message.payloadString);
-			//	console.log("add_gz: topic=" + message.destinationName + ", gz=" + message.payloadString);
-				break;	
-			default:
-			console.log("NO_ADD: Message with unknown topic=" + message.destinationName + ", message=" + message.payloadString);
-			}
-			
-			for (i=0; i < maxLength; i++){
-				data_accel[i][1] = cA_ax[i];
-				data_accel[i][2] = cA_ay[i];
-				data_accel[i][3] = cA_az[i];
-				
-				data_gyro[i][1] = cA_gx[i];
-				data_gyro[i][2] = cA_gy[i];
-				data_gyro[i][3] = cA_gz[i];
-				
-				data_temp[i] = cA_temp[i];
-			}
-			//console.log("data_accel=" + data_accel);
-			//console.log("data_temp=" + data_temp);
-			
-
-			drawChart_temp();
-			drawChart_accel();
-			drawChart_gyro();
-		}	
-		
-		
-		// Circular Array	
-		var add_temp = function(element){
-			if(cA_temp.length == maxLength){
-				cA_temp.pop();
-			}
-			cA_temp.unshift(element);
-			for (i=0; i < maxLength; i++){
-				data_temp[i] = data_temp[i];
-			}
-		};
-			
-		var add_ax = function(element){
-			if(cA_ax.length == maxLength){
-				cA_ax.pop();
-			}
-			cA_ax.unshift(element);
-		};
-
-		var add_ay = function(element){
-			if(cA_ay.length == maxLength){
-				cA_ay.pop();
-			}
-			cA_ay.unshift(element);
-		};
-
-		var add_az = function(element){
-			if(cA_az.length == maxLength){
-				cA_az.pop();
-			}
-			cA_az.unshift(element);
-		};
-		
-		var add_gx = function(element){
-			if(cA_gx.length == maxLength){
-				cA_gx.pop();
-			}
-			cA_gx.unshift(element);
-		};
-
-		var add_gy = function(element){
-			if(cA_gy.length == maxLength){
-				cA_gy.pop();
-			}
-			cA_gy.unshift(element);
-		};
-
-		var add_gz = function(element){
-			if(cA_gz.length == maxLength){
-				cA_gz.pop();
-			}
-			cA_gz.unshift(element);
-		};			
-			
-				
-		// Testmessage for testing communication to, and from the MQTT Broker
-		function testmessage() {
-			message = new Paho.MQTT.Message('-15');
-			message.destinationName = "EmbSy/gruppe_15/temp";
-			client.send(message);
-		//	console.log("first test message sent to topic EmbSy/gruppe_15/temp");
-			
-			message = new Paho.MQTT.Message('12');
-			message.destinationName = "EmbSy/gruppe_15/temp";
-			client.send(message);
-		//	console.log("second test message sent to topic EmbSy/gruppe_15/temp");
-
-		
-			message = new Paho.MQTT.Message("100");
-			message.destinationName = "EmbSy/gruppe_15/ax";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("150");
-			message.destinationName = "EmbSy/gruppe_15/ax";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("200");
-			message.destinationName = "EmbSy/gruppe_15/ay";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("250");
-			message.destinationName = "EmbSy/gruppe_15/ay";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("300");
-			message.destinationName = "EmbSy/gruppe_15/az";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("350");
-			message.destinationName = "EmbSy/gruppe_15/az";
-			client.send(message);
-
-			
-			message = new Paho.MQTT.Message("100");
-			message.destinationName = "EmbSy/gruppe_15/gx";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("150");
-			message.destinationName = "EmbSy/gruppe_15/gx";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("200");
-			message.destinationName = "EmbSy/gruppe_15/gy";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("250");
-			message.destinationName = "EmbSy/gruppe_15/gy";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("300");
-			message.destinationName = "EmbSy/gruppe_15/gz";
-			client.send(message);
-			
-			message = new Paho.MQTT.Message("350");
-			message.destinationName = "EmbSy/gruppe_15/gz";
-			client.send(message);
-			
-		//	console.log("cA_temp =" + cA_temp + "cA_ax=" + cA_ax + "cA_ay=" + cA_ay + "cA_az=" + cA_az);			
-		}
-		
-		
-        function send() {
-            if (!client) {
-                return;
-            }
-            var message = new Paho.MQTT.Message("First test message: Hello");
-            message.destinationName = "EmbSy/gruppe_15/test";
-            client.send(message);
-        }
-    </script>
-
+<!-- Site script with button handlers and stuff -->
+<script src="javascript/site.js"></script>
 
 </body>
 </html>
